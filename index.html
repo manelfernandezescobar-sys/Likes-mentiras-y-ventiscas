@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>LIKES MENTIRAS Y VENTISCAS</title>
+    <link rel="stylesheet" href="styles.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CSS MEJORADO (más limpio + fixes)
+   - “dale Like” puede ser <a class="portada__cta" href="#menu">
+   - .img-section ahora es contenedor; la imagen se estiliza con .img-section img
+   - Fix para .btn-cerrar-global: (IMPORTANTE) colócalo al FINAL del <body>
+   - Menú overlay con :target (#menu)
+   - Paneles con :target (#breve-sinopsis, #tema, etc.)
+============================================================ */
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+:root {
+  --negro: #0a0a0a;
+  --blanco: #f4f4f4;
+  --gris-texto: #2b2b2b;
+  --rojo-alerta: #ff4d4d;
+
+  --transicion-lenta: transform 0.6s cubic-bezier(0.85, 0, 0.15, 1),
+    opacity 0.6s cubic-bezier(0.85, 0, 0.15, 1);
+  --transicion-menu: transform 0.5s cubic-bezier(0.9, 0, 0.1, 1),
+    opacity 0.5s cubic-bezier(0.9, 0, 0.1, 1);
+
+  --safe-top: 96px; /* espacio para nav + aire */
+  --safe-bottom: 60px; /* alto footer */
+  --pad-x: clamp(18px, 4vw, 40px);
+  --pad-y: clamp(20px, 4vw, 44px);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--negro);
+  font-family: "Montserrat", sans-serif;
+  color: var(--blanco);
+
+  /* app-like: portada + paneles */
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* Tipografías fuertes */
+.section__title,
+.portada__title,
+.nav__links a {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+/* Links */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Accesibilidad: foco */
+:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.85);
+  outline-offset: 4px;
+  border-radius: 10px;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transicion-lenta: none;
+    --transicion-menu: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ============================================================
+   1) PORTADA
+============================================================ */
+.portada {
+  /* área útil sin pisar el footer */
+  height: calc(100vh - var(--safe-bottom));
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  /* en vez de space-between (que deforma), controlamos con gaps */
+  justify-content: flex-start;
+  gap: 12px;
+
+  padding-top: calc(var(--safe-top) + 12px);
+  padding-left: var(--pad-x);
+  padding-right: var(--pad-x);
+  padding-bottom: 12px;
+
+  background: radial-gradient(circle at center, #1a1a1a 0%, var(--negro) 70%);
+
+  /* CLAVE: si no cabe, scroll en la portada (no se pisa nada) */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.portada__header {
+  width: 100%;
+}
+
+.portada__title {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(2.2rem, 8vw, 5.5rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  max-width: 16ch;
+  margin-inline: auto;
+}
+
+.portada__tagline {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  opacity: 0.55;
+  margin-bottom: 1.5vh;
+  line-height: 1.45;
+}
+
+.portada__cta {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  opacity: 0.9;
+}
+.portada__cta:hover {
+  opacity: 1;
+}
+
+/* Imagen central */
+.portada__concept {
+  flex: 1; /* ocupa el espacio central */
+  min-height: 0; /* CLAVE: permite que flex encoja sin romper */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.portada__concept img {
+  display: block;
+  max-width: 92%;
+
+  /* CLAVE: no uses vh puro: depende del alto útil real */
+  max-height: 100%;
+  height: auto;
+  width: auto;
+
+  object-fit: contain;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0px 20px 60px rgba(0, 0, 0, 0.9);
+
+  /* importante para “no pisar”: sin scale por defecto */
+  transform: none;
+  transition: transform 0.35s ease;
+}
+
+.portada__concept:hover img {
+  transform: scale(1.03);
+}
+
+.portada__synopsis {
+  margin-top: 2vh;
+  max-width: 65ch;
+  font-size: clamp(0.9rem, 1.3vw, 1.05rem);
+  opacity: 0.82;
+  line-height: 1.55;
+
+  /* limitar líneas sin romper layout */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Si mantienes btn-cerrar dentro de portada, lo ocultamos */
+.portada .btn-cerrar {
+  display: none;
+}
+
+/* ============================================================
+   2) NAVBAR OVERLAY (ABRIR/CERRAR CON :target)
+============================================================ */
+.nav {
+  position: fixed;
+
+  top: 40px;
+  right: 40px;
+  z-index: 3000;
+}
+
+.nav__inner {
+  display: contents; /* no afecta layout, mantiene el markup limpio */
+}
+
+.nav__brand {
+  position: relative;
+  z-index: 3001;
+
+  display: inline-block;
+  padding: 12px 18px;
+
+  font-weight: 900;
+  font-size: 1.1rem;
+  letter-spacing: 5px;
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(10, 10, 10, 0.35);
+  backdrop-filter: blur(10px);
+
+  transition: 0.3s ease;
+  cursor: pointer;
+}
+
+.nav__links {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+
+  height: 100vh;
+
+  background: rgba(10, 10, 10, 0.97);
+  backdrop-filter: blur(20px);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  list-style: none;
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-20px);
+  transition: var(--transicion-menu);
+}
+
+/* ABRIR: cuando el nav es el target (#menu) */
+.nav:target .nav__links {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* Efecto del botón cuando está abierto */
+.nav:target .nav__brand {
+  border-color: var(--rojo-alerta);
+  color: var(--rojo-alerta);
+}
+
+.nav__links a {
+  font-size: clamp(1.2rem, 4vw, 3rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  transition: 0.4s ease;
+}
+
+.nav__links a:hover {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--blanco);
+  padding-left: 15px;
+}
+
+/* ============================================================
+   3) SISTEMA DE PANELES (SECCIONES + PERSONAJES + VISUAL)
+============================================================ */
+.section,
+.personajes,
+.visual {
+  position: fixed;
+  inset: 0;
+
+  width: 100%;
+  height: calc(100% - var(--safe-bottom));
+
+  background: var(--blanco);
+  color: var(--negro);
+
+  padding: var(--safe-top) var(--pad-x) var(--pad-y);
+
+  z-index: 1000;
+
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  transform: translateY(110%);
+  opacity: 0.98;
+  transition: var(--transicion-lenta);
+}
+
+/* Mostrar panel cuando es el target */
+.section:target,
+.personajes:target,
+.visual:target {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Cabecera del panel */
+.section__header {
+  margin-bottom: 2.2rem;
+  border-bottom: 4px solid var(--negro);
+  text-align: center;
+
+  display: block;
+  padding-bottom: 0.6rem;
+  text-align: center;
+}
+
+.section__title {
+  font-size: clamp(1.5rem, 5vw, 3.4rem);
+  font-weight: 900;
+text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+/* Cuerpo */
+.section__body {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.section__body p {
+  font-size: clamp(1.05rem, 1.25vw, 1.25rem);
+  line-height: 1.75;
+  margin-bottom: 1.6rem;
+  color: var(--gris-texto);
+}
+
+.section__body h4 {
+  margin: 2.2rem 0 1rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #111;
+}
+
+/* Listas */
+.section__list {
+  margin-top: 0.75rem;
+  padding-left: 1.2rem;
+}
+
+.section__list li {
+  margin-bottom: 0.85rem;
+  color: var(--gris-texto);
+  line-height: 1.65;
+}
+
+/* ============================================================
+   3.1) IMÁGENES DE SECCIÓN (SIMPLIFICADO)
+   HTML recomendado:
+   <div class="img-section"><img src="..." alt="..." loading="lazy"></div>
+============================================================ */
+.img-section {
+  width: 100%;
+  max-width: 600px;
+  margin: 24px auto;
+}
+
+.img-section img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================================
+   4) BOTONES CERRAR
+   - btn-cerrar: dentro del panel (si lo dejas)
+   - btn-cerrar-global: recomendado (colócalo AL FINAL del body)
+============================================================ */
+.btn-cerrar {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  z-index: 4000;
+
+  background: var(--negro);
+  color: var(--blanco);
+
+  padding: 12px 18px;
+  font-weight: 900;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+
+  transition: 0.25s ease;
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+}
+
+.section:target .btn-cerrar,
+.personajes:target .btn-cerrar,
+.visual:target .btn-cerrar {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.btn-cerrar:hover {
+  background: var(--rojo-alerta);
+  transform: translateY(-1px);
+}
+
+/* Global (recomendado) — OJO:
+   Para que esto funcione, .btn-cerrar-global debe estar DESPUÉS
+   de las secciones en el HTML (al final del body). */
+.btn-cerrar-global {
+  position: fixed;
+  top: 35px;
+  left: 40px;
+  z-index: 5000;
+
+  background: var(--negro);
+  color: var(--blanco);
+
+  padding: 12px 20px;
+  font-weight: 900;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.3s ease;
+}
+
+.section:target ~ .btn-cerrar-global,
+.personajes:target ~ .btn-cerrar-global,
+.visual:target ~ .btn-cerrar-global {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ============================================================
+   5) PERSONAJES (TARJETAS)
+============================================================ */
+.personajes__body {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+
+  display: grid;
+  gap: 20px;
+  padding: 0 15px;
+}
+
+.personaje {
+  display: grid;
+  grid-template-columns: 1fr; /* móvil */
+  gap: 20px;
+  padding: 15px;
+
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+
+  align-items: start;
+}
+
+.personaje__imagen {
+  width: 100%;
+  max-width: 350px;
+  margin: 0 auto;
+}
+
+.personaje__imagen img {
+  width: 100%;
+  display: block;
+
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: center top;
+
+  filter: grayscale(40%) contrast(1.1);
+  border: 1px solid #1a1a1a;
+  transition: filter 0.3s ease;
+}
+
+.personaje__contenido h4 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+
+  border-bottom: 2px solid #e74c3c;
+  display: inline-block;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+}
+
+.personaje__contenido p {
+  line-height: 1.6;
+  color: #333;
+}
+
+/* Desktop */
+@media (min-width: 650px) {
+  .personaje {
+    grid-template-columns: 220px 1fr;
+    align-items: center;
+  }
+
+  .personaje.impar {
+    grid-template-columns: 1fr 220px;
+  }
+
+  .personaje.impar .personaje__imagen {
+    order: 2;
+  }
+
+  .personaje__imagen {
+    max-width: none;
+  }
+}
+
+/* ============================================================
+   6) PROPUESTA VISUAL (GRID)
+============================================================ */
+.visual__intro {
+  margin-bottom: 16px;
+}
+
+.visual__grid {
+  max-width: 1100px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 12px;
+}
+
+.img-section {
+  grid-column: span 4;
+  overflow: hidden;
+  aspect-ratio: 3 / 2;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  overflow: hidden;
+  background: #fff;
+}
+
+.visual__grid .img-section:nth-child(1),
+.visual__grid .img-section:nth-child(6) {
+  grid-column: span 6;
+}
+
+.img-section img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  transition: 0.35s ease;
+}
+
+.img-section:hover img {
+  transform: scale(1.03);
+}
+
+/* ============================================================
+   7) FOOTER (BARRA FIJA)
+============================================================ */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: var(--safe-bottom);
+
+  background: var(--negro);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  display: flex;
+  align-items: center;
+  z-index: 2000;
+}
+
+.footer__inner {
+  width: 100%;
+  padding: 0 40px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0.7;
+}
+
+.footer__contact a {
+  color: var(--blanco);
+  text-transform: none !important;
+  border-bottom: 1px solid #444;
+  transition: 0.3s;
+}
+
+.footer__contact a:hover {
+  color: var(--rojo-alerta);
+  border-color: var(--rojo-alerta);
+}
+
+/* ============================================================
+   8) RESPONSIVE (MÓVIL)
+============================================================ */
+@media (max-width: 860px) {
+  .nav {
+    top: 18px;
+    right: 18px;
+  }
+
+  .btn-cerrar {
+    top: 18px;
+    left: 18px;
+    padding: 10px 14px;
+  }
+
+  .btn-cerrar-global {
+    top: 18px;
+    left: 18px;
+    padding: 10px 14px;
+  }
+
+  .footer__inner {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 6px;
+    font-size: 0.62rem;
+  }
+
+  .section,
+  .personajes,
+  .visual {
+    padding: 86px 18px 22px 18px;
+  }
+
+  .personaje,
+  .personaje.impar {
+    grid-template-columns: 1fr;
+  }
+
+  .personaje.impar .personaje__imagen {
+    order: 0;
+  }
+
+  .img-section {
+    grid-column: span 12;
+  }
+
+  .visual__grid .img-section:nth-child(1),
+  .visual__grid .img-section:nth-child(6) {
+    grid-column: span 12;
+  }
+}
+
+</style>
+  </head>
+  <body>
+   
+    <nav class="nav" id="menu" aria-label="Navegación principal">
+      <div class="nav__inner">
+        <a class="nav__brand" href="#menu">LMV</a>
+    
+        <ul class="nav__links">
+          <li><a href="#portada">INICIO</a></li>
+          <li><a href="#breve-sinopsis">SINOPSIS</a></li>
+          <li><a href="#tema">TEMA Y CONFLICTO</a></li>
+          <li><a href="#intencion-autor">NOTA DE INTENCIÓN</a></li>
+          <li><a href="#personajes-principales">PERSONAJES</a></li>
+          <li><a href="#estructura-dramatica">ESTRUCTURA NARRATIVA</a></li>
+          <li><a href="#publico-objetivo">PÚBLICO OBJETIVO</a></li>
+          <li><a href="#potencial-comercial">POTENCIAL DE MERCADO</a></li>
+          <li><a href="#propuesta-visual">PROPUESTA VISUAL</a></li>
+<li><a href="#referentes">REFERENTES</a></li>
+<li><a href="https://drive.google.com/file/d/1vJSpUCfPnhhGMAoGVMmfQIXh_Xcs1qIv/view?usp=drive_link">GUIÓN EN PDF</a></li>
+<li><a href="https://drive.google.com/file/d/1vJSpUCfPnhhGMAoGVMmfQIXh_Xcs1qIv/view?usp=drive_link">GUIÓN APP MÓVIL</a></li>
+
+        </ul>
+      </div>
+    </nav>
+
+    <section class="portada" id="portada" aria-labelledby="portada-title">
+      <header class="portada__header">
+        <h2 class="portada__title" id="portada-title">
+          LIKES, MENTIRAS Y VENTISCAS
+        </h2>
+        <p class="portada__tagline">
+          Si quieres la verdad… <br />
+          <a class="portada__cta" href="#menu">dale Like</a>
+        </p>      </header>
+
+      <figure class="portada__concept">
+        <img
+          src="img/portada.JPG"
+          loading="lazy"
+        />
+     </figure>
+
+      <p class="portada__synopsis">
+        Un thriller satírico de encierro sobre la verdad, el poder y la
+        violencia en la era del Like.
+      </p>
+    </section>
+
+    <section
+      class="section"
+      id="breve-sinopsis"
+      aria-labelledby="breve-sinopsis-title"
+    >
+      <header class="section__header">
+        <h2 class="section__title" id="breve-sinopsis-title">SINOPSIS</h2>
+      </header>
+
+      <div class="section__body">
+        <p>
+          Una tormenta de nieve aísla la casa por completo. Se va la luz. Cae la
+          calefacción. La comida empieza a escasear. Y desaparece la conexión a
+          internet.
+        </p>
+      
+        <p>
+          Sin señal, el grupo pierde su referencia externa y el equilibrio
+          interno se rompe. Surgen tensiones, acusaciones y luchas por el
+          liderazgo. El frío y el miedo precipitan decisiones imprudentes que
+          tienen consecuencias irreversibles. Las muertes que siguen no
+          resuelven el conflicto: lo intensifican.
+        </p>
+
+        <p>
+          El anfitrión, Macready, decide grabarlo todo. Si no pueden emitir el
+          especial previsto, emitirán el desastre. La tragedia empieza a
+          convertirse en material.
+        </p>
+   </div>
+      <div class="img-section">
+        <img 
+        src="img/sinopsis.JPG"
+        loading="lazy"
+      />
+      </div>
+      <div class="section__body">
+        <p>
+          Cuando finalmente regresa la señal, la supervivencia ya no es el único
+          objetivo. Lo ocurrido puede contarse, y quien controle la versión
+          definitiva controlará el futuro profesional de todos.
+        </p>
+
+        <p>
+          La retransmisión comienza. El horror deja de ser íntimo y se convierte
+          en espectáculo en tiempo real. El directo culmina en un asesinato ante
+          la cámara.
+        </p>
+
+        <p>
+          La última imagen no es de rescate, sino de validación digital: una
+          mirada directa al objetivo mientras el contador de
+          <q>likes</q> asciende.
+        </p>
+      </div>
+      <div class="img-section">
+        <img 
+        src="img/sinopsis2.JPG"
+        loading="lazy"
+      />
+      </div>
+    </section>
+
+    <section class="section" id="tema" aria-labelledby="tema-title">
+      <header class="section__header">
+        <h2 class="section__title" id="tema-title">TEMA Y CONFLICTO</h2>
+      </header>
+
+      <div class="section__body">
+        <p>
+          El tema central es la lucha por la autenticidad y la supervivencia en
+          un mundo superficial y manipulador, donde la validación digital se
+          confunde con la propia existencia. Atrapados en una situación límite
+          que los empuja al colapso, los personajes se ven obligados a decidir
+          hasta dónde están dispuestos a llegar para no desaparecer.
+        </p>
+
+        <p>
+          La película dialoga con la tradición del encierro alegórico en la
+          línea de <cite>El ángel exterminador</cite>, donde el aislamiento
+          expone la fragilidad moral de una élite. Explora cómo, bajo presión
+          extrema, la humanidad puede erosionarse con rapidez: el encierro no
+          crea monstruos, revela lo que ya estaba latente. La verdad deja de ser
+          un valor moral para convertirse en un recurso estratégico.
+        </p>
+     </div>
+      <div class="img-section">
+        <img 
+        src="img/conflicto3.JPG"
+        loading="lazy"
+      />
+      </div>
+      <div class="section__body">
+
+        <p>
+          En su construcción de tensión y progresiva descomposición psicológica,
+          se acerca al asedio claustrofóbico de
+          <cite>Alien</cite>: un grupo aislado en un espacio cerrado donde la
+          amenaza, aunque no siempre visible, es constante. Comparte también con
+          <cite>The Thing</cite> la dinámica de paranoia y desconfianza
+          creciente, donde el verdadero peligro no solo está afuera, sino dentro
+          del propio grupo.
+        </p>
+
+        <p>
+          En su dimensión contemporánea, la película conecta con el espíritu
+          crítico de <cite>Black Mirror</cite>, trasladando la amenaza al
+          terreno digital: la tecnología no genera el conflicto, lo expone y lo
+          amplifica.
+        </p>
+     </div>
+      <div class="img-section">
+        <img 
+        src="img/conflicto2.JPG"
+        loading="lazy"
+      />
+      </div>
+      <div class="section__body">
+
+        <p>
+          Lo que la diferencia es su antagonista: no hay monstruo ni amenaza
+          sobrenatural. El verdadero peligro es la necesidad de ser visto. No es
+          terror paranormal; es terror de algoritmo. La pregunta no es quién
+          sobrevive, sino quién controlará la historia cuando vuelva la señal.
+        </p>
+
+        <p>
+          Con una localización principal y un reparto coral que combina talento
+          joven y figuras adultas de peso, la película plantea una propuesta de
+          producción contenida pero ambiciosa en impacto, diseñada para generar
+          conversación y recorrido en festivales y plataformas.
+        </p>
+      </div>
+      <div class="img-section">
+        <img 
+        src="img/conflicto.JPG"
+        loading="lazy"
+      />
+      </div>
+    </section>
+
+    <section
+      class="section"
+      id="intencion-autor"
+      aria-labelledby="intencion-autor-title"
+    >
+      <header class="section__header">
+        <h2 class="section__title" id="intencion-autor-title">
+          NOTA DE INTENCIÓN        </h2>
+      </header>
+
+      <div class="section__body">
+        <p>
+          No me interesaba hacer una película sobre <q>influencers</q> como
+          caricatura. No he buscado arquetipos fáciles —el simpático, el
+          solitario, el ridículo, el villano evidente—. He buscado personas
+          reconocibles. Gente que podría existir. Gente que, de hecho, ya
+          existe.
+        </p>
+
+        <p>
+          Lo que comparten no es una etiqueta generacional, sino algo más
+          incómodo: el ego.
+        </p>
+
+        <p>
+          Todos los personajes de <em>LIKES, MENTIRAS Y VENTISCAS</em> son, en
+          mayor o menor medida, narcisistas. Cada uno con matices, con heridas y
+          contradicciones propias, pero todos atravesados por una misma lógica:
+          primero yo. Primero mi imagen. Primero mi beneficio.
+        </p>
+
+        <p>
+          Las desgracias ajenas les afectan, sí. Les entristecen delante de
+          cámara. Pero solo les duelen de verdad cuando no pueden
+          capitalizarlas.
+        </p>
+
+        <p>
+          No me interesa analizar la violencia como espectáculo, ni hacer una
+          versión contemporánea de <cite>Tesis</cite>. La violencia aquí no es
+          un objeto de fascinación, sino una consecuencia. Surge cuando la
+          empatía desaparece y el otro deja de ser persona para convertirse en
+          oportunidad.
+        </p>
+
+        <p>
+          Si Buñuel utilizaba el encierro para criticar el aislamiento moral de
+          la burguesía frente a la realidad social, yo utilizo el encierro para
+          hablar de otro aislamiento: el que producen las redes cuando alimentan
+          el ego hasta convertirlo en única brújula. No es un aislamiento
+          físico, sino emocional. Un mundo donde la exposición constante
+          reemplaza al vínculo real.
+        </p>
+
+        <p>
+          Vivimos en una época donde la validación se mide en números y donde la
+          identidad pública pesa más que la conciencia privada. En ese contexto,
+          el miedo no es morir: es desaparecer.
+        </p>
+
+        <p>
+          <em>LIKES, MENTIRAS Y VENTISCAS</em> no pregunta quién es el monstruo.
+          Pregunta en qué momento dejamos de ver al otro como persona. Y si, en
+          el fondo, todos estamos un poco atrapados en la misma habitación.
+        </p>
+      </div>
+      <div class="img-section">
+        <img 
+        src="img/intencion.JPG"
+        loading="lazy"
+      />
+      </div>
+    </section>
+
+    <section
+      class="personajes"
+      id="personajes-principales"
+      aria-labelledby="personajes-title"
+    >
+      <header class="section__header">
+        <h2 class="section__title" id="personajes-title">
+          PERSONAJES
+        </h2>
+      </header>
+
+      <div class="personajes__body">
+        <!-- MACREADY -->
+        <div class="personaje par">
+          <div class="personaje__imagen">
+            <img src="img/macready.JPG" alt="Macready" loading="lazy" />
+          </div>
+          <div class="personaje__contenido">
+            <h4>MACREADY</h4>
+            <p>
+              Macready siempre entra primero en una habitación. No por valentía:
+              porque entiende que el plano empieza cuando él aparece. Lleva años
+              viviendo de su voz y de su mirada a cámara, con una habilidad
+              quirúrgica para convertir cualquier cosa en narrativa. No
+              improvisa: edita en tiempo real. El evento no es una reunión; es
+              una producción, y una producción no se detiene.
+            </p>
+            <p>
+              Cuando el encierro se vuelve real, su primera reacción no es
+              ayudar ni huir: es encuadrar. Cree —de verdad— que mantener el
+              control es proteger al grupo; si él dirige el relato, el caos será
+              soportable. El problema es que esta vez no hay postproducción
+              posible. Sin público, aunque sea imaginario, Macready se desinfla…
+              y por eso se vuelve más peligroso.
+            </p>
+            <p>
+              <strong>Arco actoral:</strong> del showman en control al hombre
+              que necesita audiencia para existir y no sabe apagar la cámara
+              cuando el espectáculo ya es sangre.
+            </p>
+          </div>
+        </div>
+
+        <!-- ÁNGELA RAW -->
+        <div class="personaje impar">
+          <div class="personaje__imagen">
+            <img src="img/angela-raw.JPG" alt="Ángela Raw" loading="lazy" />
+          </div>
+          <div class="personaje__contenido">
+            <h4>ÁNGELA RAW</h4>
+            <p>
+              Ángela Raw ha construido su vida sobre una certeza: el estilo es
+              poder. No necesita levantar la voz para dominar una habitación; lo
+              hace corrigiendo un gesto, una palabra, una energía. Su autoridad
+              no es ruidosa: es normativa. Decide qué es elegante y qué es
+              vulgar, y el grupo reacciona a ese juicio aunque finja lo
+              contrario.
+            </p>
+            <p>
+              Ha sido mirada, imitada, deseada… y también ha sentido el silencio
+              cuando el foco se desplaza. Llega con una determinación fría: no
+              está ahí para recordar lo que fue, sino para demostrar que sigue
+              siendo imprescindible. Al principio mantiene la compostura y
+              ordena el caos con precisión. Pero cuando el encierro rompe las
+              reglas de convivencia, lo que se resquebraja no es su cordura: es
+              el decorado que la sostiene. Ángela no pierde la cabeza; pierde la
+              fachada. Y cuando el mundo ya no tiene forma, su elegancia se
+              convierte en juicio, y el juicio en aislamiento .
+            </p>
+            <p>
+              <strong>Arco actoral:</strong> del control social sutil a la
+              rigidez implacable; una caída “elegante” y cruel.
+            </p>
+          </div>
+        </div>
+
+        <!-- JOSÉ FIT -->
+        <div class="personaje par">
+          <div class="personaje__imagen">
+            <img src="img/jose-fit.JPG" alt="José Fit" loading="lazy" />
+          </div>
+          <div class="personaje__contenido">
+            <h4>JOSÉ FIT</h4>
+            <p>
+              José Fit ha construido su identidad sobre una regla sencilla: el
+              que resiste, gana. No es sofisticado ni brillante, pero cree en el
+              esfuerzo como salvación. Entrena no por estética: por
+              supervivencia. Su autoridad nace del cuerpo y de la disciplina; el
+              dolor, para él, ordena el mundo. En el encierro intenta imponer
+              esa lógica: si aguantamos, saldremos. Si no nos rendimos, esto
+              pasará.
+            </p>
+            <p>
+              Pero cuando la situación deja de responder a la voluntad, su
+              sistema se tambalea. La disciplina ya no controla el caos y emerge
+              lo que siempre estuvo debajo: rabia, orgullo, necesidad de
+              respeto. La fuerza deja de ser solución y se convierte en
+              problema.
+            </p>
+            <p>
+              <strong>Arco actoral:</strong> un “macho alfa” de manual que
+              descubre que su herramienta principal no sirve contra un enemigo
+              sin forma.
+            </p>
+          </div>
+        </div>
+
+        <!-- LA DIVA -->
+        <div class="personaje impar">
+          <div class="personaje__imagen">
+            <img src="img/la-diva.JPG" alt="La Diva" loading="lazy" />
+          </div>
+          <div class="personaje__contenido">
+            <h4>LA DIVA</h4>
+            <p>
+              La llaman Diva porque es fácil reducirla a eso: belleza, estética,
+              presencia. Pero su talento real es otro: leer la sala en segundos.
+              Detecta debilidades, calcula alianzas, se coloca donde el poder se
+              concentra. Ha aprendido una verdad incómoda: la imagen no es
+              superficial, es poder. Si controlas cómo te ven, controlas lo que
+              creen de ti.
+            </p>
+            <p>
+              En la mansión, su supervivencia es social: sonríe cuando conviene,
+              provoca cuando hace falta, se acerca al que manda y se aleja del
+              que cae. No por maldad, sino por instinto. Pero cuando el encierro
+              borra el espejo —sin luz, sin maquillaje, sin encuadre— lo que se
+              tambalea no es su belleza: es su estrategia. Y sin estrategia, la
+              Diva no es frágil. Es impredecible .
+            </p>
+            <p>
+              <strong>Arco actoral:</strong> poder seductor y político que se
+              descompone cuando desaparece el “marco” que sostenía la identidad.
+            </p>
+          </div>
+        </div>
+
+        <!-- OJOAVIZOR -->
+        <div class="personaje par">
+          <div class="personaje__imagen">
+            <img src="img/ojoavizor.JPG" alt="Ojoavizor" loading="lazy" />
+          </div>
+          <div class="personaje__contenido">
+            <h4>OJOAVIZOR</h4>
+            <p>
+              Ojoavizor no es un loco: es un hombre que decidió hace tiempo que
+              no volverían a tomarle por ingenuo. Sus teorías no son
+              extravagancias: son armadura. Se siente más despierto que los
+              demás, más atento, más difícil de domesticar. En el grupo incomoda
+              porque no participa del consenso; cuando el encierro comienza, no
+              entra en pánico: entra en confirmación. Para él, el caos no es
+              sorpresa: es prueba.
+            </p>
+            <p>
+              Su conflicto no es con la realidad, sino con la posibilidad de que
+              la realidad no tenga intención. Necesita que el desastre tenga
+              autor, un plan, una mano. Si todo es azar, entonces es vulnerable.
+              Y eso es lo único que no puede soportar. No desestabiliza al grupo
+              por placer: lo desestabiliza porque necesita tener razón .
+            </p>
+            <p>
+              <strong>Arco actoral:</strong> convicción como refugio; lucidez
+              como trampa; la paranoia convertida en identidad.
+            </p>
+          </div>
+        </div>
+
+        <!-- SOLE -->
+        <div class="personaje impar">
+          <div class="personaje__imagen">
+            <img src="img/sole.JPG" alt="Sole" loading="lazy" />
+          </div>
+          <div class="personaje__contenido">
+            <h4>SOLE</h4>
+            <p>
+              Sole ha vivido siempre cerca del foco, pero rara vez dentro. Es
+              rápida, ingeniosa, la que sostiene la conversación cuando se cae y
+              convierte el silencio incómodo en risa. Sabe leer la sala y,
+              durante años, ha hecho de eso su lugar: ser imprescindible sin
+              ocupar demasiado espacio. Y está cansada. El evento es una
+              oportunidad —no necesariamente para mandar—, pero sí para dejar de
+              ser la que hace que otros brillen.
+            </p>
+            <p>
+              Cuando el encierro tensa el grupo, Sole detecta fisuras antes que
+              muchos. Y ahí está su giro: deja de mediar, deja de amortiguar,
+              deja de hacer humor cuando ya no hay nada gracioso. Su silencio
+              pesa más que sus chistes, y esa retirada —dejar de sostener—
+              desestabiliza la convivencia .
+            </p>
+            <p>
+              <strong>Arco actoral:</strong> comedia como armadura que un día se
+              cae; de “pegamento” emocional a catalizadora del conflicto.
+            </p>
+          </div>
+        </div>
+
+        <!-- TÍO PACO -->
+        <div class="personaje par">
+          <div class="personaje__imagen">
+            <img src="img/tio-paco.JPG" alt="Tío Paco" loading="lazy" />
+          </div>
+          <div class="personaje__contenido">
+            <h4>TÍO PACO</h4>
+            <p>
+              Tío Paco (56) es un hombre consumido, con gafas de pasta y
+              camiseta de Metallica, que vive pegado a una madre absorbente y a
+              la sensación de que el mundo siempre le ha quedado un poco grande
+              . Se aferra a la lógica como quien se aferra a una barandilla:
+              clasifica, calcula, explica. Tiene hambre de demostrarse —y
+              demostrar— que sirve para algo, que su cabeza todavía puede
+              “salvar la situación”.
+            </p>
+            <p>
+              En la casa, cuando el encierro se vuelve operativo, él encarna la
+              promesa de la razón: cables, batería, regletas, radio, una posible
+              salida técnica. Y por eso es tan trágico: porque su momento de
+              valor no es un discurso heroico, sino un cálculo. Quiere ordenar
+              el caos… y el caos no siempre perdona. Su presencia abre un campo
+              actoral precioso: ternura seca, orgullo humilde, comicidad
+              nerviosa, y una necesidad de reconocimiento que llega tarde .
+            </p>
+            <p>
+              <strong>Arco actoral:</strong> el “cerebro” del grupo que busca
+              redención práctica; la razón como fe.
+            </p>
+          </div>
+        </div>
+
+        <!-- NATE -->
+        <div class="personaje impar">
+          <div class="personaje__imagen">
+            <img src="img/nate.JPG" alt="Nate" loading="lazy" />
+          </div>
+          <div class="personaje__contenido">
+            <h4>NATE</h4>
+            <p>
+              Nate tiene talento. Entiende la técnica, el ritmo, la fabricación
+              de una imagen poderosa. Su forma de controlar el mundo no pasa por
+              imponerse, sino por dirigir desde fuera: el encuadre, la
+              prioridad, lo que se ve y lo que no. Sin Macready no estaría ahí;
+              lo admira y depende de él, y esa dependencia lo humilla. El
+              encierro le quita herramientas, pero no mirada: es de los pocos
+              que entiende que el relato puede volverse más importante que la
+              supervivencia.
+            </p>
+            <p>
+              Su conflicto es claro: quiere dejar de estar detrás. Y cuando
+              intenta ocupar un lugar que nunca le han permitido, no lo hace
+              desde la rabia, sino desde el cansancio: el gesto de alguien que
+              ha vivido a la sombra demasiado tiempo .
+            </p>
+            <p>
+              <strong>Arco actoral:</strong> talento relegado + deseo de foco;
+              una rebelión íntima que tiene consecuencias.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section
+      class="section"
+      id="estructura-dramatica"
+      aria-labelledby="estructura-dramatica-title"
+    >
+      <header class="section__header">
+        <h2 class="section__title" id="estructura-dramatica-title">
+          ESTRUCTURA NARRATIVA        </h2>
+      </header>
+
+      <div class="section__body">
+        <p>
+          El guion está planteado como una estructura en cinco actos porque el
+          encierro no provoca un único giro dramático, sino una degradación por
+          fases. Cada acto marca un cambio claro en la dinámica del grupo:
+          primero la ficción social compartida, después la grieta, luego la
+          resistencia organizada, más tarde la fractura interna y, finalmente,
+          la descomposición. No es una historia de escape, sino de
+          transformación progresiva.
+        </p>
+    </div>
+      <div class="img-section">
+        <img 
+        src="img/estructura.JPG"
+        loading="lazy"
+      />
+      </div>
+      <div class="section__body">
+
+        <p>
+          La repetición forma parte consciente del diseño. Los intentos fallidos
+          y las dinámicas que se repiten no buscan alargar la trama, sino
+          generar una sensación de encierro real y tiempo espeso. Cada
+          repetición aumenta la tensión y expone con mayor crudeza las pulsiones
+          de los personajes. La progresión no es externa, es psicológica y
+          moral.
+        </p>
+    </div>
+      <div class="img-section">
+        <img 
+        src="img/estructura2.JPG"
+        loading="lazy"
+      />
+      </div>
+      <div class="section__body">
+
+        <p>
+          En ese sentido, el dispositivo conecta con la tradición del encierro
+          absurdo —de Buñuel a Camus— donde la falta de explicación no es un
+          vacío, sino el motor dramático. No se trata de resolver el misterio,
+          sino de observar cómo se desmoronan las identidades cuando el marco
+          social desaparece. El clímax no es una salida, sino una revelación.
+        </p>
+      </div>
+   
+      <div class="img-section">
+        <img 
+        src="img/estructura3.JPG"
+        loading="lazy"
+      />
+      </div>
+   
+      
+    </section>
+    <section
+      class="section"
+      id="publico-objetivo"
+      aria-labelledby="publico-objetivo-title"
+    >
+      <header class="section__header">
+        <h2 class="section__title" id="publico-objetivo-title">
+          PÚBLICO OBJETIVO
+        </h2>
+      </header>
+
+      <div class="section__body">
+        <p>
+          El proyecto se dirige principalmente a un público de 18 a 40 años,
+          habituado al consumo de plataformas y a narrativas de tensión
+          psicológica con lectura social. Es un espectador que reconoce el
+          lenguaje de las redes, la cultura de la imagen y la performatividad
+          como parte de su vida cotidiana, y que conecta con historias que
+          cuestionan esas dinámicas desde dentro.
+        </p>
+
+        <p>
+          Se orienta especialmente a quienes consumen thrillers sociales
+          contemporáneos, relatos de encierro y ficciones corales con conflicto
+          moral. No es un terror clásico, sino una película de tensión
+          identitaria y crítica cultural, lo que amplía su atractivo más allá
+          del género puro.
+        </p>
+
+        <p>
+          Por su temática y dispositivo narrativo, es especialmente adecuada
+          para:
+        </p>
+
+        <ul class="section__list">
+          <li>
+            Estreno en plataforma de alcance amplio, donde el debate y la
+            viralización potencian su impacto.
+          </li>
+          <li>
+            Circuito de festivales de género y fantástico como Sitges, donde el
+            encierro absurdo y la lectura alegórica dialogan con tradición
+            autoral.
+          </li>
+          <li>
+            Mercado internacional, gracias a un conflicto universal (pérdida de
+            identidad en situación límite) fácilmente exportable y reconocible
+            en diferentes contextos culturales.
+          </li>
+        </ul>
+      </div>
+  <div class="img-section">
+        <img 
+        src="img/objetivo.JPG"
+        loading="lazy"
+      />
+      </div>
+    </section>
+    <section
+      class="section"
+      id="potencial-comercial"
+      aria-labelledby="potencial-comercial-title"
+    >
+      <header class="section__header">
+        <h2 class="section__title" id="potencial-comercial-title">
+          POTENCIAL DE MERCADO        </h2>
+      </header>
+
+      <div class="section__body">
+        <p>
+          El proyecto combina ambición autoral con una estructura de producción
+          eficiente. Está concebido como una película de alto impacto narrativo
+          con un modelo de coste contenido y una fuerte capacidad de
+          conversación pública.
+        </p>
+
+        <h4>Espacio único (presupuesto controlado).</h4>
+        <p>
+          La acción se desarrolla principalmente en una única localización: una
+          mansión aislada. Esto permite concentrar el presupuesto en diseño de
+          producción, atmósfera y elenco, reduciendo significativamente costes
+          logísticos sin perder intensidad dramática. El encierro no es solo una
+          decisión narrativa, sino también una ventaja industrial: maximiza
+          tensión con mínimos desplazamientos y control total del entorno de
+          rodaje.
+        </p>
+
+        <h4>Reparto coral (coste moderado, alto atractivo).</h4>
+        <p>
+          El peso dramático se distribuye entre varios personajes, lo que
+          permite combinar intérpretes reconocibles con talento emergente. No
+          depende de una sola gran estrella para sostener la historia, sino de
+          un conjunto potente. Esto facilita el equilibrio presupuestario y
+          amplía el atractivo promocional al movilizar distintos públicos.
+        </p>
+
+        <h4>Alta conversación social.</h4>
+        <p>
+          La película dialoga directamente con temas contemporáneos: cultura de
+          la imagen, performatividad, liderazgo, masculinidad, cancelación,
+          teorías conspirativas, ambición y ego digital. No ofrece respuestas
+          cerradas, sino posiciones en conflicto. Eso la convierte en un
+          producto naturalmente debatible, ideal para generar conversación
+          orgánica en redes, medios y programas de análisis cultural.
+        </p>
+
+        <h4>Final viralizable.</h4>
+        <p>
+          El desenlace no busca cierre complaciente, sino impacto. Está diseñado
+          para provocar discusión inmediata, interpretación múltiple y
+          circulación en forma de clips, escenas icónicas y momentos
+          compartibles. Es el tipo de final que impulsa el boca-oreja digital.
+        </p>
+
+        <p>
+          En conjunto, se trata de una película pensada no solo para exhibición,
+          sino para conversación. Una obra diseñada para generar debate y clips
+          compartibles.
+        </p>
+      </div>
+    </section>
+    <section class="visual" id="propuesta-visual" aria-labelledby="propuesta-visual-title">
+      <header class="section__header">
+        <h2 class="section__title" id="propuesta-visual-title">
+          PROPUESTA VISUAL
+        </h2>
+      </header>
+
+      <div class="section__body">
+        <p class="visual__intro">
+       Imágenes conceptuales que construyen el aislamiento, la degradación y la transición del lujo al espectáculo.
+        </p>
+
+        
+          <div class="img-section">
+            <img
+              src="img/escena1.JPG"
+              alt="Referencia visual 1"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="img-section">
+            <img
+              src="img/escena2.JPG"
+              alt="Referencia visual 2"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="img-section">
+            <img
+              src="img/escena3.JPG"
+              alt="Referencia visual 3"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="img-section">
+            <img
+              src="img/escena4.JPG"
+              alt="Referencia visual 4"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="img-section">
+            <img
+              src="img/escena5.JPG"
+              alt="Referencia visual 5"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="img-section">
+            <img
+              src="img/escena6.JPG"
+              alt="Referencia visual 6"
+              loading="lazy"
+            />
+          </div>
+          <div class="img-section">
+            <img
+              src="img/escena7.JPG"
+              alt="Referencia visual 7"
+              loading="lazy"
+            />
+          </div>
+          <div class="img-section">
+            <img
+              src="img/escena8.JPG"
+              alt="Referencia visual 8"
+              loading="lazy"
+            />
+          </div>
+     
+     
+      </div>
+    </section>
+
+    <section class="visual" id="referentes" aria-labelledby="propuesta-visual-title">
+      <header class="section__header">
+        <h2 class="section__title" id="referentes-title">
+          REFERENTES
+        </h2>
+      </header>
+
+      <div class="section__body">
+        <p class="visual__intro">
+          Referentes visuales que construyen el aislamiento, la tensión y la progresiva descomposición del espacio.
+        </p>
+
+       
+          <div class="img-section">
+            <img
+              src="img/ejemplo1.JPG"
+              alt="Referencia visual 1"
+              loading="lazy"
+            />
+          </div>
+
+<div class="section__body">
+  <h4>El ángel exterminador</h4>
+  <p>
+    Referencia estructural y conceptual. El encierro inexplicable como
+    dispositivo que despoja a una élite de sus códigos de convivencia y
+    revela su fragilidad moral. En <em>LIKES, MENTIRAS Y VENTISCAS</em>,
+    el aislamiento no crea monstruos: elimina el decorado que los contenía
+    y expone el ego como verdadera fuerza destructiva.
+  </p>
+</div>
+
+          <div class="img-section">
+            <img
+              src="img/ejemplo2.JPG"
+              alt="Referencia visual 2"
+              loading="lazy"
+            />
+          </div>
+
+<div class="section__body">
+  <h4>Los odiosos ocho</h4>
+  <p>
+    Referente visual y atmosférico: nieve, espacio cerrado y violencia latente
+    que estalla sin heroísmo. El interior como olla a presión donde cada mirada
+    pesa y cada silencio es amenaza. La mansión funciona del mismo modo: refugio
+    de lujo convertido en campo de batalla físico y moral.
+  </p>
+</div>
+
+          <div class="img-section">
+            <img
+              src="img/ejemplo3.JPG"
+              alt="Referencia visual 3"
+              loading="lazy"
+            />
+          </div>
+
+<div class="section__body">
+  <h4>La cosa (The Thing)</h4>
+  <p>
+    Modelo de tensión grupal y paranoia. Aislamiento climático, desconfianza
+    progresiva y fractura interna como motor dramático. Aquí no hay criatura
+    infiltrada: la amenaza es el ego y la necesidad de controlar el relato,
+    que erosiona la cohesión del grupo desde dentro.
+  </p>
+</div>
+
+          <div class="img-section">
+            <img
+              src="img/ejemplo4.JPG"
+              alt="Referencia visual 4"
+              loading="lazy"
+            />
+          </div>
+
+<div class="section__body">
+  <h4>El resplandor</h4>
+  <p>
+    Referente visual por el contraste entre la majestuosidad del paisaje
+    montañoso y el aislamiento absoluto que impone. El paisaje nevado como preludio de aislamiento psicológico. El exterior
+    blanco y silencioso frente a un interior que se vuelve opresivo. La casa
+    no es solo escenario: es un organismo que amplifica la descomposición
+    emocional y transforma el lujo en amenaza.
+  </p>
+</div>
+
+          <div class="img-section">
+            <img
+              src="img/ejemplo5.JPG"
+              alt="Referencia visual 5"
+              loading="lazy"
+            />
+          </div>
+
+<div class="section__body">
+  <h4>El cuento de la criada</h4>
+  <p>
+    Referencia de atmósfera e interioridad. Uso expresivo de la luz, encuadres
+    cerrados y contención gestual para intensificar la tensión sin estridencias.
+    La introspección no se verbaliza: se sugiere en miradas, silencios y una
+    puesta en escena que respira opresión.
+  </p>
+</div>
+
+          <div class="img-section">
+            <img
+              src="img/ejemplo6.JPG"
+              alt="Referencia visual 6"
+              loading="lazy"
+            />
+          </div>
+<div class="section__body">
+  <h4>The Bear</h4>
+  <p>
+    Ejemplo contemporáneo de dinámicas de grupo y ritmo verbal. Conversaciones
+    superpuestas, tensión constante y liderazgo disputado en espacios reducidos.
+    La presión nace de la interacción: egos en fricción que convierten cada
+    diálogo en un combate emocional.
+  </p>
+</div>
+     
+     
+    </section>
+
+    <footer class="footer" aria-label="Información del proyecto">
+      <div class="footer__inner">
+       
+    
+        <p class="footer__author">
+          Escrito por <strong>Manel Fernández Escobar</strong>
+        </p>
+    
+        <p class="footer__contact">
+          <a href="mailto:manelfernandezescobar@gmail.com">manelfernandezescobar@gmail.com</a>
+          <span class="footer__sep">·</span>
+          </p>
+          <p><span class="footer__phone">+34 652 981 449</span></p>
+      </div>
+    </footer>
+    <a href="#portada" class="btn-cerrar-global">✕ CERRAR</a>
+  </body>
+</html>
