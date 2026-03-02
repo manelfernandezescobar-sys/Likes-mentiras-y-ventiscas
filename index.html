@@ -252,9 +252,9 @@ a {
 
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  gap: 15px;
+gap: clamp(10px, 2vh, 20px);
   list-style: none;
 
   opacity: 0;
@@ -277,7 +277,7 @@ a {
 }
 
 .nav__links a {
-  font-size: clamp(1.2rem, 4vw, 3rem);
+  font-size: clamp(1.2rem, 5vh, 3rem);
   font-weight: 900;
   text-transform: uppercase;
   transition: 0.4s ease;
@@ -1620,3 +1620,4 @@ text-align: center;
     <a href="#portada" class="btn-cerrar-global">✕ CERRAR</a>
   </body>
 </html>
+
