@@ -99,8 +99,9 @@ a {
   /* área útil sin pisar el footer */
   height: calc(100vh - var(--safe-bottom));
 
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto 1fr;   /* header + imagen */
+  gap: 12px;
   align-items: center;
   text-align: center;
 
@@ -156,13 +157,14 @@ a {
 
 /* Imagen central */
 .portada__concept {
-  flex: 1; /* ocupa el espacio central */
   min-height: 0; /* CLAVE: permite que flex encoja sin romper */
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  place-items: center;
+
  text-decoration: none;
 
 }
@@ -210,7 +212,6 @@ a {
 .portada .btn-cerrar {
   display: none;
 }
-
 /* ============================================================
    2) NAVBAR OVERLAY (ABRIR/CERRAR CON :target)
 ============================================================ */
@@ -1551,3 +1552,4 @@ Contraste entre paisaje nevado y aislamiento psicológico. El exterior blanco e 
     <a href="#portada" class="btn-cerrar-global">✕ CERRAR</a>
   </body>
 </html>
+
