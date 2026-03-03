@@ -162,6 +162,9 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+ text-decoration: none;
+
 }
 
 .portada__concept img {
@@ -180,11 +183,13 @@ a {
 
   /* importante para “no pisar”: sin scale por defecto */
   transform: none;
-  transition: transform 0.35s ease;
+  transition: transform .35s ease, filter .35s ease;
+
 }
 
 .portada__concept:hover img {
   transform: scale(1.03);
+  filter: brightness(1.05);
 }
 
 .portada__synopsis {
@@ -240,48 +245,74 @@ a {
   cursor: pointer;
 }
 
-.nav__links {
+/* MENÚ: panel 90% alto, centrado, gap pequeño y scroll interno */
+.nav__links{
   position: fixed;
-  inset: 0;
-  width: 100vw;
+  left: 50%;
+  top: 50%;
 
-  height: 100vh;
+  width: min(92vw, 980px);
+  height: 90vh;
+
+  transform: translate(-50%, -50%) translateY(-20px);
 
   background: rgba(10, 10, 10, 0.97);
   backdrop-filter: blur(20px);
 
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+
+  /* CLAVE: centrado real, sin repartir huecos */
+  justify-content: center;
   align-items: center;
-gap: clamp(10px, 2vh, 20px);
+
+  /* gap pequeño y estable */
+  gap: clamp(8px, 1.2vh, 12px);
+
+  /* si hay muchos links -> scroll dentro del panel */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  padding: 18px 16px;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 18px;
+
   list-style: none;
 
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-20px);
   transition: var(--transicion-menu);
 }
 
-/* ABRIR: cuando el nav es el target (#menu) */
-.nav:target .nav__links {
+.nav:target .nav__links{
   opacity: 1;
   pointer-events: auto;
-  transform: translateY(0);
+  transform: translate(-50%, -50%);
 }
 
+/* Tipografía: que NO se haga enana en móvil */
+.nav__links a{
+  font-size: clamp(1.05rem, 2.2vw, 1.55rem); /* más estable que vh */
+  font-weight: 900;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.12;
+  padding: 6px 10px;
+  display: inline-block;
+}
+
+/* Opcional: si quieres aún más compacto en móviles bajos */
+@media (max-height: 700px){
+  .nav__links{ padding: 14px 12px; }
+  .nav__links a{ padding: 5px 8px; }
+}
 /* Efecto del botón cuando está abierto */
 .nav:target .nav__brand {
   border-color: var(--rojo-alerta);
   color: var(--rojo-alerta);
 }
 
-.nav__links a {
-  font-size: clamp(1.2rem, 5vh, 3rem);
-  font-weight: 900;
-  text-transform: uppercase;
-  transition: 0.4s ease;
-}
+
 
 .nav__links a:hover {
   color: transparent;
@@ -690,6 +721,7 @@ text-align: center;
 }
 
 </style>
+
   </head>
   <body>
    
@@ -1620,5 +1652,6 @@ text-align: center;
     <a href="#portada" class="btn-cerrar-global">✕ CERRAR</a>
   </body>
 </html>
+
 
 
