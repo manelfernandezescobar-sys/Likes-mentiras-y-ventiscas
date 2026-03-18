@@ -24,14 +24,12 @@
   --blanco: #f4f4f4;
   --gris-texto: #2b2b2b;
   --rojo-alerta: #ff4d4d;
-
   --transicion-lenta: transform 0.6s cubic-bezier(0.85, 0, 0.15, 1),
     opacity 0.6s cubic-bezier(0.85, 0, 0.15, 1);
   --transicion-menu: transform 0.5s cubic-bezier(0.9, 0, 0.1, 1),
     opacity 0.5s cubic-bezier(0.9, 0, 0.1, 1);
 
-  --safe-top: 96px; /* espacio para nav + aire */
-  --safe-bottom: 60px; /* alto footer */
+
   --pad-x: clamp(18px, 4vw, 40px);
   --pad-y: clamp(20px, 4vw, 44px);
 }
@@ -57,6 +55,7 @@ body {
   font-family: "Montserrat", sans-serif;
   font-weight: 800;
   letter-spacing: -0.03em;
+
 }
 
 /* Links */
@@ -87,6 +86,9 @@ a {
    1) PORTADA
 ============================================================ */
 .portada {
+
+  --safe-top: 96px; /* espacio para nav + aire */
+  --safe-bottom: 60px; /* alto footer */
   /* Ajusta esto a tu footer real */
   --footer-h: 60px;
 
@@ -104,7 +106,7 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* orden natural */
+  justify-content: center; /* orden natural */
   text-align: center;
   gap: 12px;
   background: radial-gradient(circle at center, #1a1a1a 0%, var(--negro) 70%);
@@ -120,6 +122,7 @@ a {
 .portada__header,
 .portada figure {
   width: min(var(--maxw), 100%);
+  margin-top: 40px;
 }
 
 /* Tipos */
@@ -213,12 +216,11 @@ a {
   font-size: clamp(0.92rem, 1.2vw, 1.05rem);
   opacity: 0.82;
   line-height: 1.55;
-
-  /* máximo 2 líneas para no comerse altura en horizontal */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  margin-bottom: clamp(60px, 8vh, 140px);  /* máximo 2 líneas para no comerse altura en horizontal */
+  display: block; 
+  overflow: visible;
+  padding: 0 20px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 .portada__concept:hover img {
   transform: scale(1.03);
@@ -269,8 +271,8 @@ a {
   left: 50%;
   top: 50%;
 
-  width: min(92vw, 980px);
-  height: 90vh;
+  width: 100vw;
+  height: 100vh;
 
   transform: translate(-50%, -50%) translateY(-20px);
 
@@ -293,7 +295,6 @@ a {
 
   padding: 18px 16px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 18px;
 
   list-style: none;
 
@@ -339,7 +340,59 @@ a {
   -webkit-text-stroke: 1px var(--blanco);
   padding-left: 15px;
 }
+/* Ocultar todo lo que sea inglés por defecto */
+[data-lang="en"] { display: none; }
 
+/* Si el HTML tiene la clase "lang-en", mostrar inglés y ocultar español */
+html.lang-en [data-lang="en"] { display: inline; }
+html.lang-en [data-lang="es"] { display: none; }
+/* Contenedor del selector */
+.language-picker {
+  display: flex;
+  gap: 0; /* Pegados para que parezca una sola pieza */
+  margin-top: 10px; /* Si va dentro del menú */
+}
+
+/* Estilo de los botones */
+.language-picker button {
+  flex: 1;
+  background: rgba(10, 10, 10, 0.4);
+  color: var(--blanco);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 6px 12px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  z-index: 3000;
+}
+
+/* Botón izquierdo redondeado solo de un lado */
+.language-picker button:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+/* Botón derecho redondeado solo de un lado */
+.language-picker button:last-child {
+  border-radius: 0 4px 4px 0;
+  border-left: none; /* Evita doble borde en medio */
+}
+
+/* Efecto Hover */
+.language-picker button:hover {
+  background: var(--blanco);
+  color: var(--negro);
+}
+
+/* Estilo para el idioma activo (necesitarás añadir esta clase con JS) */
+.language-picker button.active {
+  background: var(--rojo-alerta);
+  border-color: var(--rojo-alerta);
+  color: white;
+}
 /* ============================================================
    3) SISTEMA DE PANELES (SECCIONES + PERSONAJES + VISUAL)
 ============================================================ */
@@ -354,10 +407,8 @@ a {
 
   background: var(--blanco);
   color: var(--negro);
-
-  padding: var(--safe-top) var(--pad-x) var(--pad-y);
-
-  z-index: 1000;
+  padding-top: (120px, 15vh, 160px);
+    z-index: 1000;
 
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -377,7 +428,7 @@ a {
 
 /* Cabecera del panel */
 .section__header {
-  margin-bottom: 2.2rem;
+  margin-bottom: 40px;
   border-bottom: 4px solid var(--negro);
   text-align: center;
 
@@ -393,6 +444,7 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.04em;
   line-height: 1;
+  padding-top: 30px;
 }
 
 /* Cuerpo */
@@ -427,6 +479,9 @@ a {
   color: var(--gris-texto);
   line-height: 1.65;
 }
+.footer__author span {
+  display: inline; /* Para que "Written by" esté en la misma línea que el nombre */
+}
 
 /* ============================================================
    3.1) IMÁGENES DE SECCIÓN (SIMPLIFICADO)
@@ -437,6 +492,8 @@ a {
   width: 100%;
   max-width: 600px;
   margin: 24px auto;
+  border-radius: 12px;
+
 }
 
 .img-section img {
@@ -650,42 +707,89 @@ a {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: var(--safe-bottom);
-
+  /* Usamos min-height por si el contenido crece */
+  min-height: var(--safe-bottom, 50px); 
   background: var(--negro);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-
   display: flex;
   align-items: center;
   z-index: 2000;
+  padding: 5px 0;
 }
 
 .footer__inner {
   width: 100%;
   padding: 0 40px;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  font-size: 0.7rem;
+  gap: 20px; /* Espacio mínimo entre grupos */
+  
+  font-size: 0.65rem; /* Un poco más pequeño para que respire */
   text-transform: uppercase;
-  letter-spacing: 2px;
-  opacity: 0.7;
+  letter-spacing: 1.5px;
 }
 
-.footer__contact a {
+.footer__group {
+  flex: 1; /* Todos los grupos ocupan lo mismo para estar equilibrados */
+}
+
+.footer__group--center {
+  text-align: center;
+  text-transform: none; /* Para el email */
+}
+
+.footer__group--right {
+  text-align: right;
+  opacity: 0.4; /* El copyright más sutil */
+}
+
+/* Ajuste para móviles: si la pantalla es pequeña, ocultamos el copyright o lo apilamos */
+@media (max-width: 768px) {
+  .footer__inner {
+    flex-direction: column;
+    gap: 8px;
+    padding: 15px 20px;
+    text-align: center;
+  }
+  
+  .footer__group, .footer__group--right, .footer__group--center {
+    text-align: center;
+    flex: none;
+  }
+  
+  .footer {
+    height: auto; /* Que crezca según el contenido en móvil */
+  }
+
+  .footer__sep {
+    display: none; /* Quitamos el punto separador en móvil para poner uno debajo de otro */
+  }
+  
+  .footer__phone {
+    display: block;
+    margin-top: 4px;
+  }
+}
+
+/* Estilo del link de mail */
+.footer__group a {
   color: var(--blanco);
-  text-transform: none !important;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
   transition: 0.3s;
+  text-decoration: none;
 }
 
-.footer__contact a:hover {
+.footer__group a:hover {
   color: var(--rojo-alerta);
   border-color: var(--rojo-alerta);
 }
-
+.footer--hidden {
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
 /* ============================================================
    8) RESPONSIVE (MÓVIL)
 ============================================================ */
@@ -739,29 +843,54 @@ a {
     grid-column: span 12;
   }
 }
+html.lang-en [data-lang="es"] { display: none !important; }
+html:not(.lang-en) [data-lang="en"] { display: none !important; }
 
 </style>
   </head>
   <body>
    
     <nav class="nav" id="menu" aria-label="Navegación principal">
+      
       <div class="nav__inner">
+      
         <a class="nav__brand" href="#menu">LMV</a>
-    
+        <div class="language-picker">
+          <button onclick="changeLanguage('es')">ES</button>
+          <button onclick="changeLanguage('en')">EN</button>
+        </div>
         <ul class="nav__links">
-          <li><a href="#portada">INICIO</a></li>
-          <li><a href="#breve-sinopsis">SINOPSIS</a></li>
-          <li><a href="#tema">TEMA Y CONFLICTO</a></li>
-          <li><a href="#intencion-autor">NOTA DE INTENCIÓN</a></li>
-          <li><a href="#personajes-principales">PERSONAJES</a></li>
-          <li><a href="#estructura-dramatica">ESTRUCTURA NARRATIVA</a></li>
-          <li><a href="#publico-objetivo">PÚBLICO OBJETIVO</a></li>
-          <li><a href="#potencial-comercial">POTENCIAL DE MERCADO</a></li>
-          <li><a href="#propuesta-visual">PROPUESTA VISUAL</a></li>
-<li><a href="#referentes">REFERENTES</a></li>
-<li><a href="https://drive.google.com/file/d/1vJSpUCfPnhhGMAoGVMmfQIXh_Xcs1qIv/view?usp=drive_link">GUIÓN EN PDF</a></li>
-<li><a href="https://manelfernandezescobar-sys.github.io/APP-likes-mentiras-y-ventiscas/">GUIÓN APP MÓVIL</a></li>
-
+          <li><a href="#portada"><span data-lang="es">INICIO</span>
+            <span data-lang="en">HOME</span></a></li>
+          <li><a href="#breve-sinopsis"><span data-lang="es">SINOPSIS</span>
+            <span data-lang="en">SYNOPSIS</span></a></li>
+          <li><a href="#tema"><span data-lang="es">TEMA Y CONFLICTO</span>
+            <span data-lang="en">THEME & CONFLICT</span></a></li>
+          <li><a href="#intencion-autor"><span data-lang="es">NOTA DE INTENCIÓN</span>
+            <span data-lang="en">DIRECTOR'S NOTE</span></a></li>
+          <li><a href="#personajes-principales"><span data-lang="es">PERSONAJES</span>
+            <span data-lang="en">CHARACTERS</span></a></li>
+          <li><a href="#estructura-dramatica"><span data-lang="es">ESTRUCTURA NARRATIVA</span>
+            <span data-lang="en">NARRATIVE STRUCTURE</span></a></li>
+          <li><a href="#publico-objetivo"><span data-lang="es">PÚBLICO OBJETIVO</span>
+            <span data-lang="en">TARGET AUDIENCE</span></a></li>
+          <li><a href="#potencial-comercial"><span data-lang="es">POTENCIAL DE MERCADO</span>
+            <span data-lang="en">MARKET POTENTIAL</span></a></li>
+          <li><a href="#propuesta-visual"><span data-lang="es">PROPUESTA VISUAL</span>
+            <span data-lang="en">VISUAL PROPOSAL</span></a></li>
+<li><a href="#referentes"><span data-lang="es">REFERENTES</span>
+  <span data-lang="en">REFERENCES</span></a></li>
+<li><a target="_blank" href="https://drive.google.com/file/d/1vJSpUCfPnhhGMAoGVMmfQIXh_Xcs1qIv/view?usp=drive_link"><span data-lang="es">GUIÓN EN PDF</span>
+  <span data-lang="en">PDF SCRIPT</span></a></li>
+  <li>
+    <a target="_blank" href="https://manelfernandezescobar-sys.github.io/APP-likes-mentiras-y-ventiscas/" data-lang="es">
+      GUIÓN APP MÓVIL
+    </a>
+  
+    <a target="_blank" href="https://manelfernandezescobar-sys.github.io/APP-LIKES-LIES-AND-BLIZZARDS/" data-lang="en">
+      SCRIPT APP
+    </a>
+  </li>
         </ul>
       </div>
     </nav>
@@ -772,8 +901,15 @@ a {
           LIKES, MENTIRAS Y VENTISCAS
         </h2>
         <p class="portada__tagline">
-          Si quieres la verdad… <br />
-          <a class="portada__cta" href="#menu">dale Like</a>
+          <span data-lang="es">
+            Si quieres la verdad… <br />
+            <a class="portada__cta" href="#menu">dale Like</a>
+          </span>
+          
+          <span data-lang="en">
+            If you want the truth… <br />
+            <a class="portada__cta" href="#menu">give it a Like</a>
+          </span>
         </p>      </header>
 
     <a href="#menu" class="portada__concept">
@@ -784,8 +920,9 @@ a {
         />
      </a>
      <p class="portada__synopsis">
-       Una comedia negra de encierro en la era del algoritmo.
-      </p>
+      <span data-lang="es">Una comedia negra de encierro en la era del algoritmo.</span>
+      <span data-lang="en">A dark comedy of confinement in the age of the algorithm.</span>
+    </p>
       </section>
 
     <section
@@ -794,18 +931,20 @@ a {
       aria-labelledby="breve-sinopsis-title"
     >
       <header class="section__header">
-        <h2 class="section__title" id="breve-sinopsis-title">SINOPSIS</h2>
+        <h2 class="section__title" id="breve-sinopsis-title"><span data-lang="es">SINOPSIS</span>
+          <span data-lang="en">SYNOPSIS</span></h2>
       </header>
 
       <div class="section__body">
         <p>
-          En una lujosa casa aislada en las montañas de Andorra, un grupo de influencers de distintos ámbitos se reúne para grabar el especial navideño de un canal de éxito liderado por el carismático y narcisista Macready. Es el evento del año: luces, cámaras, egos y millones de seguidores pendientes de cada gesto.
+          <span data-lang="es">En una lujosa casa aislada en las montañas de Andorra, un grupo de influencers de distintos ámbitos se reúne para grabar el especial navideño de un canal de éxito liderado por el carismático y narcisista Macready. Es el evento del año: luces, cámaras, egos y millones de seguidores pendientes de cada gesto.</span>
+          <span data-lang="en">In a luxurious, secluded villa nestled in the mountains of Andorra, a group of influencers from various niches gathers to film a Christmas special for a hit channel led by the charismatic and narcissistic Macready. It’s the event of the year: lights, cameras, egos, and millions of followers watching every move.</span>
         </p>
       
         <p>
-          Pero una tormenta de nieve interrumpe la grabación. Se va la luz. Cae la calefacción. Desaparece la señal. La casa queda incomunicada. Lo que comienza como una experiencia incómoda se transforma rápidamente en una crisis real. El frío cala en los huesos, la comida escasea y el aislamiento erosiona las máscaras digitales. Sin la validación externa que sostiene sus identidades, los influencers empiezan a desmoronarse.
+          <span data-lang="es">Pero una tormenta de nieve interrumpe la grabación. Se va la luz. Cae la calefacción. Desaparece la señal. La casa queda incomunicada. Lo que comienza como una experiencia incómoda se transforma rápidamente en una crisis real. El frío cala en los huesos, la comida escasea y el aislamiento erosiona las máscaras digitales. Sin la validación externa que sostiene sus identidades, los influencers empiezan a desmoronarse.</span>
+          <span data-lang="en">But a snowstorm cuts the filming short. The power goes out. The heating fails. The signal vanishes. The house is left cut off from the world. What begins as an awkward ordeal quickly escalates into a full-blown crisis. The cold pierces to the bone, food runs scarce, and isolation erodes their digital masks. Stripped of the external validation that sustains their identities, the influencers begin to unravel.</span>
         </p>
-
      </div>
       <div class="img-section">
         <img 
@@ -814,12 +953,13 @@ a {
       />
       </div>
       <div class="section__body">
-      <p>
-         El grupo se degrada lentamente. Las tensiones se intensifican. Surgen acusaciones, paranoias y luchas por el liderazgo. La convivencia forzada saca a la luz secretos, inseguridades y miserias que antes solo existían fuera de plano. Las primeras muertes —absurdas, violentas, grotescas— no unen al grupo: lo fracturan definitivamente.
-        </p>
-
         <p>
-        Cuando finalmente reaparece la señal, ya no importa quién ha muerto ni cómo. Lo importante es quién controla el relato. La retransmisión comienza. El horror se transforma en espectáculo en tiempo real.
+          <span data-lang="es">El grupo se degrada lentamente. Las tensiones se intensifican. Surgen acusaciones, paranoias y luchas por el liderazgo. La convivencia forzada saca a la luz secretos, inseguridades y miserias que antes solo existían fuera de plano. Las primeras muertes —absurdas, violentas, grotescas— no unen al grupo: lo fracturan definitivamente.</span>
+          <span data-lang="en">The group slowly degenerates. Tensions boil over. Accusations, paranoia, and power struggles emerge. Forced coexistence brings to light secrets, insecurities, and miseries that previously only existed off-camera. The first deaths—absurd, violent, and grotesque—do not unite the group: they fracture it beyond repair.</span>
+        </p>
+        <p>
+          <span data-lang="es"> Cuando finalmente reaparece la señal, ya no importa quién ha muerto ni cómo. Lo importante es quién controla el relato. La retransmisión comienza. El horror se transforma en espectáculo en tiempo real. </span>
+          <span data-lang="en">When the signal finally reappears, it no longer matters who has died or how. What matters is who controls the narrative. The broadcast begins. Horror is transformed into a real-time spectacle.</span>
         </p>
 
      </div>
@@ -832,7 +972,8 @@ a {
       <div class="section__body">
 
         <p>
-        Y mientras el contador de “likes” asciende, una última mirada a cámara confirma la verdad más incómoda: en la era digital, el dolor es moneda, la culpa es editable… y la supervivencia es solo otra forma de posicionamiento.
+          <span data-lang="es">Y mientras el contador de “likes” asciende, una última mirada a cámara confirma la verdad más incómoda: en la era digital, el dolor es moneda, la culpa es editable… y la supervivencia es solo otra forma de posicionamiento.</span>
+          <span data-lang="en">And as the "like" counter climbs, one final look at the camera confirms the most uncomfortable truth: in the digital age, pain is currency, guilt is editable... and survival is just another form of branding.</span>
         </p>
 
   
@@ -841,23 +982,22 @@ a {
 
     <section class="section" id="tema" aria-labelledby="tema-title">
       <header class="section__header">
-        <h2 class="section__title" id="tema-title">TEMA Y CONFLICTO</h2>
+        <h2 class="section__title" id="tema-title"><span data-lang="es">TEMA Y CONFLICTO</span>
+        <span data-lang="en">THEME & CONFLICT</span></h2>
       </header>
 
       <div class="section__body">
         <p>
-  El tema central no es la autenticidad, sino la dependencia de la mirada en un sistema donde existir equivale a ser visto. Aislados de toda conexión exterior, los personajes descubren que su identidad está sostenida por la validación constante. La desesperación no nace solo del encierro físico, sino del miedo a volverse irrelevantes.
-</p>
-<p>
-Bajo esa presión, la convivencia se degrada. La empatía se vuelve frágil, el otro deja de ser aliado y empieza a convertirse en recurso. No es que el encierro los transforme en monstruos: elimina las reglas sociales que contenían su ego. La humanidad no desaparece de golpe; se erosiona, se negocia, se sacrifica cuando deja de ser útil.
+          <span data-lang="es">El tema central no es la autenticidad, sino la dependencia de la mirada en un sistema donde existir equivale a ser visto. Aislados de toda conexión exterior, los personajes descubren que su identidad está sostenida por la validación constante. La desesperación no nace solo del encierro físico, sino del miedo a volverse irrelevantes.</span>
+          <span data-lang="en">The central theme is not authenticity, but the dependence on the "gaze" in a system where existing is equivalent to being seen. Isolated from all external connection, the characters discover that their identity is sustained by constant validation. Desperation stems not only from physical confinement, but from the fear of becoming irrelevant.</span>
         </p>
-
         <p>
-          La película dialoga con la tradición del encierro alegórico en la
-          línea de <cite>El Ángel Exterminador</cite> de Luis Buñuel, donde el aislamiento expone la fragilidad moral de una élite. Explora cómo, bajo presión
-          extrema, la humanidad puede erosionarse con rapidez: el encierro no
-          crea monstruos, revela lo que ya estaba latente. La verdad deja de ser
-          un valor moral para convertirse en un recurso estratégico.
+          <span data-lang="es">Bajo esa presión, la convivencia se degrada. La empatía se vuelve frágil, el otro deja de ser aliado y empieza a convertirse en recurso. No es que el encierro los transforme en monstruos: elimina las reglas sociales que contenían su ego. La humanidad no desaparece de golpe; se erosiona, se negocia, se sacrifica cuando deja de ser útil.</span>
+          <span data-lang="en">Under this pressure, coexistence degrades. Empathy becomes fragile; the "other" stops being an ally and begins to turn into a resource. It is not that confinement transforms them into monsters: it removes the social rules that contained their egos. Humanity does not vanish all at once; it erodes, is negotiated, and is sacrificed when it ceases to be useful.</span>
+        </p>
+        <p>
+          <span data-lang="es">La película dialoga con la tradición del encierro alegórico en la línea de <cite>El Ángel Exterminador</cite> de Luis Buñuel, donde el aislamiento expone la fragilidad moral de una élite. Explora cómo, bajo presión extrema, la humanidad puede erosionarse con rapidez: el encierro no crea monstruos, revela lo que ya estaba latente. La verdad deja de ser un valor moral para convertirse en un recurso estratégico.</span>
+          <span data-lang="en">The film dialogues with the tradition of allegorical confinement in the vein of Luis Buñuel’s <cite>The Exterminating Angel</cite>, where isolation exposes the moral fragility of an elite. It explores how, under extreme pressure, humanity can quickly erode: confinement doesn’t create monsters; it reveals what was already latent. Truth ceases to be a moral value and becomes a strategic resource.</span>
         </p>
      </div>
       <div class="img-section">
@@ -869,20 +1009,13 @@ Bajo esa presión, la convivencia se degrada. La empatía se vuelve frágil, el 
       <div class="section__body">
 
         <p>
-          En su construcción de tensión y progresiva descomposición psicológica,
-          se acerca al asedio claustrofóbico de
-          <cite>Alien</cite>: un grupo aislado en un espacio cerrado donde la
-          amenaza, aunque no siempre visible, es constante. Comparte también con
-          <cite>The Thing</cite> la dinámica de paranoia y desconfianza
-          creciente, donde el verdadero peligro no solo está afuera, sino dentro
-          del propio grupo.
+          <span data-lang="es">En su construcción de tensión y progresiva descomposición psicológica, se acerca al asedio claustrofóbico de <cite>Alien</cite>: un grupo aislado en un espacio cerrado donde la amenaza, aunque no siempre visible, es constante. Comparte también con <cite>The Thing</cite> la dinámica de paranoia y desconfianza creciente, donde el verdadero peligro no solo está afuera, sino dentro del propio grupo.</span>
+          <span data-lang="en">In its construction of tension and progressive psychological decomposition, it draws close to the claustrophobic siege of <cite>Alien</cite>: an isolated group in a closed space where the threat, though not always visible, is constant. It also shares with <cite>The Thing</cite> the dynamics of growing paranoia and distrust, where the true danger is not only outside, but within the group itself.</span>
         </p>
 
         <p>
-          En su dimensión contemporánea, la película conecta con el espíritu
-          crítico de <cite>Black Mirror</cite>, trasladando la amenaza al
-          terreno digital: la tecnología no genera el conflicto, lo expone y lo
-          amplifica.
+          <span data-lang="es">En su dimensión contemporánea, la película conecta con el espíritu crítico de <cite>Black Mirror</cite>, trasladando la amenaza al terreno digital: la tecnología no genera el conflicto, lo expone y lo amplifica.</span>
+          <span data-lang="en">In its contemporary dimension, the film connects with the critical spirit of <cite>Black Mirror</cite>, shifting the threat to the digital realm: technology does not generate the conflict; it exposes and amplifies it.</span>
         </p>
      </div>
       <div class="img-section">
@@ -894,17 +1027,13 @@ Bajo esa presión, la convivencia se degrada. La empatía se vuelve frágil, el 
       <div class="section__body">
 
         <p>
-          Lo que la diferencia es su antagonista: no hay monstruo ni amenaza
-          sobrenatural. El verdadero peligro es la necesidad de ser visto. No es
-          terror paranormal; es terror de algoritmo. La pregunta no es quién
-          sobrevive, sino quién controlará la historia cuando vuelva la señal.
+          <span data-lang="es">Lo que la diferencia es su antagonista: no hay monstruo ni amenaza sobrenatural. El verdadero peligro es la necesidad de ser visto. No es terror paranormal; es terror de algoritmo. La pregunta no es quién sobrevive, sino quién controlará la historia cuando vuelva la señal.</span>
+          <span data-lang="en">What sets it apart is its antagonist: there is no monster or supernatural threat. The real danger is the need to be seen. It is not paranormal horror; it is "algorithm horror." The question is not who survives, but who will control the narrative when the signal returns.</span>
         </p>
 
         <p>
-          Con una localización principal y un reparto coral que combina talento
-          joven y figuras adultas de peso, la película plantea una propuesta de
-          producción contenida pero ambiciosa en impacto, diseñada para generar
-          conversación y recorrido en festivales y plataformas.
+          <span data-lang="es">Con una localización principal y un reparto coral que combina talento joven y figuras adultas de peso, la película plantea una propuesta de producción contenida pero ambiciosa en impacto, diseñada para generar conversación y recorrido en festivales y plataformas.</span>
+          <span data-lang="en">With a single main location and an ensemble cast that combines young talent and heavyweight veteran figures, the film presents a contained production proposal that is nonetheless ambitious in impact, designed to generate conversation and traction in festivals and streaming platforms.</span>
         </p>
       </div>
       <div class="img-section">
@@ -922,30 +1051,35 @@ Bajo esa presión, la convivencia se degrada. La empatía se vuelve frágil, el 
     >
       <header class="section__header">
         <h2 class="section__title" id="intencion-autor-title">
-          NOTA DE INTENCIÓN        </h2>
+          <span data-lang="es">NOTA DE INTENCIÓN</span>
+          <span data-lang="en">DIRECTOR'S STATEMENT</span>
+        </h2>
       </header>
 
       <div class="section__body">
         <p>
-          No me interesaba hacer una película sobre influencers como caricatura. No quería arquetipos fáciles ni villanos evidentes. Quería personas reconocibles. Gente que podría existir. Gente que, de hecho, ya
-          existe.
+          <span data-lang="es">No me interesaba hacer una película sobre influencers como caricatura. No quería arquetipos fáciles ni villanos evidentes. Quería personas reconocibles. Gente que podría existir. Gente que, de hecho, ya existe.</span>
+          <span data-lang="en">I wasn't interested in making a film about influencers as a caricature. I didn’t want easy archetypes or obvious villains. I wanted recognizable people. People who could exist. People who, in fact, already do.</span>
         </p>
 
         <p>
-Lo que comparten no es una etiqueta generacional, sino una lógica común: el ego. Primero yo. Primero mi imagen. Primero mi beneficio. No son monstruos ni caricaturas. Son personas que han aprendido a existir bajo la mirada ajena. Cuando el público desaparece, lo que se tambalea no es solo la convivencia: es la identidad.
+          <span data-lang="es">Lo que comparten no es una etiqueta generacional, sino una lógica común: el ego. Primero yo. Primero mi imagen. Primero mi beneficio. No son monstruos ni caricaturas. Son personas que han aprendido a existir bajo la mirada ajena. Cuando el público desaparece, lo que se tambalea no es solo la convivencia: es la identidad.</span>
+          <span data-lang="en">What they share isn’t a generational label, but a common logic: the ego. Me first. My image first. My benefit first. They aren't monsters or cartoons. They are individuals who have learned to exist under the gaze of others. When the audience disappears, it’s not just coexistence that falters: it’s identity itself.</span>
         </p>
 
         <p>
-          Si Buñuel utilizaba el encierro para desnudar la fragilidad moral de una clase social, aquí el encierro revela otro aislamiento: el de quienes han aprendido a existir solo bajo la mirada ajena. No es una crítica generacional. Es una pregunta incómoda. En este contexto, el miedo no es morir. Es desaparecer.
+          <span data-lang="es">Si Buñuel utilizaba el encierro para desnudar la fragilidad moral de una clase social, aquí el encierro revela otro aislamiento: el de quienes han aprendido a existir solo bajo la mirada ajena. No es una crítica generacional. Es una pregunta incómoda. En este contexto, el miedo no es morir. Es desaparecer.</span>
+          <span data-lang="en">If Buñuel used confinement to strip bare the moral fragility of a social class, here the confinement reveals a different kind of isolation: that of those who have learned to exist only under the eyes of others. This isn’t a generational critique. It’s an uncomfortable question. In this context, the fear isn’t dying. It’s vanishing.</span>
         </p>
 
         <p>
-        La violencia no me interesa como espectáculo. Me interesa como consecuencia. Surge cuando la empatía deja de ser útil. Cuando el otro ya no es alguien, sino una oportunidad. 
+          <span data-lang="es">La violencia no me interesa como espectáculo. Me interesa como consecuencia. Surge cuando la empatía deja de ser útil. Cuando el otro ya no es alguien, sino una oportunidad.</span>
+          <span data-lang="en">I’m not interested in violence as a spectacle. I’m interested in it as a consequence. It arises when empathy ceases to be useful. When the "other" is no longer a person, but an opportunity.</span>
         </p>
 
-          <p>
-          <em>LIKES, MENTIRAS Y VENTISCAS</em> no pregunta quién es el monstruo.
-          Pregunta en qué momento dejamos de ver al otro como persona. Y hasta qué punto no vivimos ya encerrados en nuestra propia imagen.
+        <p>
+          <span data-lang="es"><em>LIKES, MENTIRAS Y VENTISCAS</em> no pregunta quién es el monstruo. Pregunta en qué momento dejamos de ver al otro como persona. Y hasta qué punto no vivimos ya encerrados en nuestra propia imagen.</span>
+          <span data-lang="en"><em>LIKES, LIES AND BLIZZARDS</em> doesn’t ask who the monster is. It asks at what point we stop seeing the other as a human being. And to what extent we aren't already living imprisoned within our own image.</span>
         </p>
       </div>
       <div class="img-section">
@@ -963,7 +1097,11 @@ Lo que comparten no es una etiqueta generacional, sino una lógica común: el eg
     >
       <header class="section__header">
         <h2 class="section__title" id="personajes-title">
+
+          <span data-lang="es">
           PERSONAJES
+          </span>
+          <span data-lang="en">CHARACTERS</span>
         </h2>
       </header>
 
@@ -976,25 +1114,20 @@ Lo que comparten no es una etiqueta generacional, sino una lógica común: el eg
           <div class="personaje__contenido">
             <h4>MACREADY</h4>
             <p>
-              Macready siempre entra primero en una habitación. No por valentía:
-              porque entiende que el plano empieza cuando él aparece. Lleva años
-              viviendo de su voz y de su mirada a cámara, con una habilidad
-              quirúrgica para convertir cualquier cosa en narrativa. No
-              improvisa: edita en tiempo real. El evento no es una reunión; es
-              una producción, y una producción no se detiene.
+              <span data-lang="es">Macready siempre entra primero en una habitación. No por valentía: porque entiende que el plano empieza cuando él aparece. Lleva años viviendo de su voz y de su mirada a cámara, con una habilidad quirúrgica para convertir cualquier cosa en narrativa. No improvisa: edita en tiempo real. El evento no es una reunión; es una producción, y una producción no se detiene.</span>
+              <span data-lang="en">Macready always enters a room first. Not out of bravery, but because he understands that the frame begins the moment he appears. He has spent years living off his voice and his gaze into the lens, possessed of a surgical ability to turn anything into a narrative. He doesn’t improvise: he edits in real time. The event isn’t a gathering; it’s a production, and a production does not stop.</span>
             </p>
             <p>
-              Cuando el encierro se vuelve real, su primera reacción no es
-              ayudar ni huir: es encuadrar. Cree —de verdad— que mantener el
-              control es proteger al grupo; si él dirige el relato, el caos será
-              soportable. El problema es que esta vez no hay postproducción
-              posible. Sin público, aunque sea imaginario, Macready se desinfla…
-              y por eso se vuelve más peligroso.
+              <span data-lang="es">Cuando el encierro se vuelve real, su primera reacción no es ayudar ni huir: es encuadrar. Cree —de verdad— que mantener el control es proteger al grupo; si él dirige el relato, el caos será soportable. El problema es que esta vez no hay postproducción posible. Sin público, aunque sea imaginario, Macready se desinfla… y por eso se vuelve más peligroso.</span>
+              <span data-lang="en">When the confinement becomes real, his first instinct is neither to help nor to flee: it’s to frame. He truly believes that maintaining control means protecting the group; if he directs the story, the chaos will be bearable. The problem is that this time, there is no post-production possible. Without an audience, even an imaginary one, Macready deflates… and that is exactly what makes him more dangerous.</span>
             </p>
             <p>
-              <strong>Arco actoral:</strong> del showman en control al hombre
-              que necesita audiencia para existir y no sabe apagar la cámara
-              cuando el espectáculo ya es sangre.
+              <strong>
+                <span data-lang="es">Arco actoral:</span>
+                <span data-lang="en">Character Arc:</span>
+              </strong>
+              <span data-lang="es">del showman en control al hombre que necesita audiencia para existir y no sabe apagar la cámara cuando el espectáculo ya es sangre.</span>
+              <span data-lang="en">from the showman in control to a man who needs an audience to exist, unable to turn off the camera even when the spectacle turns to blood.</span>
             </p>
           </div>
         </div>
@@ -1007,27 +1140,20 @@ Lo que comparten no es una etiqueta generacional, sino una lógica común: el eg
           <div class="personaje__contenido">
             <h4>ÁNGELA RAW</h4>
             <p>
-              Ángela Raw ha construido su vida sobre una certeza: el estilo es
-              poder. No necesita levantar la voz para dominar una habitación; lo
-              hace corrigiendo un gesto, una palabra, una energía. Su autoridad
-              no es ruidosa: es normativa. Decide qué es elegante y qué es
-              vulgar, y el grupo reacciona a ese juicio aunque finja lo
-              contrario.
+              <span data-lang="es">Ángela Raw ha construido su vida sobre una certeza: el estilo es poder. No necesita levantar la voz para dominar una habitación; lo hace corrigiendo un gesto, una palabra, una energía. Su autoridad no es ruidosa: es normativa. Decide qué es elegante y qué es vulgar, y el grupo reacciona a ese juicio aunque finja lo contrario.</span>
+              <span data-lang="en">Ángela Raw has built her life on one certainty: style is power. She doesn’t need to raise her voice to dominate a room; she does it by correcting a gesture, a word, an energy. Her authority isn’t loud: it’s normative. She decides what is elegant and what is vulgar, and the group reacts to that judgment even when they pretend otherwise.</span>
             </p>
             <p>
-              Ha sido mirada, imitada, deseada… y también ha sentido el silencio
-              cuando el foco se desplaza. Llega con una determinación fría: no
-              está ahí para recordar lo que fue, sino para demostrar que sigue
-              siendo imprescindible. Al principio mantiene la compostura y
-              ordena el caos con precisión. Pero cuando el encierro rompe las
-              reglas de convivencia, lo que se resquebraja no es su cordura: es
-              el decorado que la sostiene. Ángela no pierde la cabeza; pierde la
-              fachada. Y cuando el mundo ya no tiene forma, su elegancia se
-              convierte en juicio, y el juicio en aislamiento .
+              <span data-lang="es">Ha sido mirada, imitada, deseada… y también ha sentido el silencio cuando el foco se desplaza. Llega con una determinación fría: no está ahí para recordar lo que fue, sino para demostrar que sigue siendo imprescindible. Al principio mantiene la compostura y ordena el caos con precisión. Pero cuando el encierro rompe las reglas de convivencia, lo que se resquebraja no es su cordura: es el decorado que la sostiene. Ángela no pierde la cabeza; pierde la fachada. Y cuando el mundo ya no tiene forma, su elegancia se convierte en juicio, y el juicio en aislamiento.</span>
+              <span data-lang="en">She has been watched, imitated, desired… and she has also felt the silence when the spotlight shifts. She arrives with cold determination: she isn't there to reminisce about who she was, but to prove she is still essential. At first, she maintains her composure, organizing the chaos with precision. But when confinement breaks the rules of coexistence, it’s not her sanity that cracks: it’s the scenery holding her up. Ángela doesn’t lose her mind; she loses her facade. And when the world loses its shape, her elegance turns into judgment, and judgment into isolation.</span>
             </p>
             <p>
-              <strong>Arco actoral:</strong> del control social sutil a la
-              rigidez implacable; una caída “elegante” y cruel.
+              <strong>
+                <span data-lang="es">Arco actoral:</span>
+                <span data-lang="en">Character Arc:</span>
+              </strong>
+              <span data-lang="es">del control social sutil a la rigidez implacable; una caída “elegante” y cruel.</span>
+              <span data-lang="en">from subtle social control to relentless rigidity; an "elegant" yet cruel downfall.</span>
             </p>
           </div>
         </div>
@@ -1040,25 +1166,20 @@ Lo que comparten no es una etiqueta generacional, sino una lógica común: el eg
           <div class="personaje__contenido">
             <h4>JOSÉ FIT</h4>
             <p>
-              José Fit ha construido su identidad sobre una regla sencilla: el
-              que resiste, gana. No es sofisticado ni brillante, pero cree en el
-              esfuerzo como salvación. Entrena no por estética: por
-              supervivencia. Su autoridad nace del cuerpo y de la disciplina; el
-              dolor, para él, ordena el mundo. En el encierro intenta imponer
-              esa lógica: si aguantamos, saldremos. Si no nos rendimos, esto
-              pasará.
+              <span data-lang="es">José Fit ha construido su identidad sobre una regla sencilla: el que resiste, gana. No es sofisticado ni brillante, pero cree en el esfuerzo como salvación. Entrena no por estética: por supervivencia. Su autoridad nace del cuerpo y de la disciplina; el dolor, para él, ordena el mundo. En el encierro intenta imponer esa lógica: si aguantamos, saldremos. Si no nos rendimos, esto pasará.</span>
+              <span data-lang="en">José Fit has built his identity on a simple rule: the one who endures, wins. He isn’t sophisticated or brilliant, but he believes in effort as salvation. He trains not for aesthetics, but for survival. His authority stems from his body and discipline; for him, pain brings order to the world. During the confinement, he tries to impose this logic: if we hold out, we’ll get out. If we don’t surrender, this will pass.</span>
             </p>
             <p>
-              Pero cuando la situación deja de responder a la voluntad, su
-              sistema se tambalea. La disciplina ya no controla el caos y emerge
-              lo que siempre estuvo debajo: rabia, orgullo, necesidad de
-              respeto. La fuerza deja de ser solución y se convierte en
-              problema.
+              <span data-lang="es">Pero cuando la situación deja de responder a la voluntad, su sistema se tambalea. La disciplina ya no controla el caos y emerge lo que siempre estuvo debajo: rabia, orgullo, necesidad de respeto. La fuerza deja de ser solución y se convierte en problema.</span>
+              <span data-lang="en">But when the situation stops responding to willpower, his system falters. Discipline no longer controls the chaos, and what was always beneath begins to emerge: rage, pride, and a desperate need for respect. Strength ceases to be the solution and becomes the problem.</span>
             </p>
             <p>
-              <strong>Arco actoral:</strong> un “macho alfa” de manual que
-              descubre que su herramienta principal no sirve contra un enemigo
-              sin forma.
+              <strong>
+                <span data-lang="es">Arco actoral:</span>
+                <span data-lang="en">Character Arc:</span>
+              </strong>
+              <span data-lang="es">un “macho alfa” de manual que descubre que su herramienta principal no sirve contra un enemigo sin forma.</span>
+              <span data-lang="en">a textbook "alpha male" who discovers that his primary tool is useless against a shapeless enemy.</span>
             </p>
           </div>
         </div>
@@ -1071,24 +1192,20 @@ Lo que comparten no es una etiqueta generacional, sino una lógica común: el eg
           <div class="personaje__contenido">
             <h4>LA DIVA</h4>
             <p>
-              La llaman Diva porque es fácil reducirla a eso: belleza, estética,
-              presencia. Pero su talento real es otro: leer la sala en segundos.
-              Detecta debilidades, calcula alianzas, se coloca donde el poder se
-              concentra. Ha aprendido una verdad incómoda: la imagen no es
-              superficial, es poder. Si controlas cómo te ven, controlas lo que
-              creen de ti.
+              <span data-lang="es">La llaman Diva porque es fácil reducirla a eso: belleza, estética, presencia. Pero su talento real es otro: leer la sala en segundos. Detecta debilidades, calcula alianzas, se coloca donde el poder se concentra. Ha aprendido una verdad incómoda: la imagen no es superficial, es poder. Si controlas cómo te ven, controlas lo que creen de ti.</span>
+              <span data-lang="en">They call her "The Diva" because it’s easy to reduce her to that: beauty, aesthetics, presence. But her real talent is something else: reading the room in seconds. She detects weaknesses, calculates alliances, and positions herself where power concentrates. She has learned an uncomfortable truth: image isn't superficial; it is power. If you control how you are seen, you control what people believe about you.</span>
             </p>
             <p>
-              En la mansión, su supervivencia es social: sonríe cuando conviene,
-              provoca cuando hace falta, se acerca al que manda y se aleja del
-              que cae. No por maldad, sino por instinto. Pero cuando el encierro
-              borra el espejo —sin luz, sin maquillaje, sin encuadre— lo que se
-              tambalea no es su belleza: es su estrategia. Y sin estrategia, la
-              Diva no es frágil. Es impredecible .
+              <span data-lang="es">En la mansión, su supervivencia es social: sonríe cuando conviene, provoca cuando hace falta, se acerca al que manda y se aleja del que cae. No por maldad, sino por instinto. Pero cuando el encierro borra el espejo —sin luz, sin maquillaje, sin encuadre— lo que se tambalea no es su belleza: es su estrategia. Y sin estrategia, la Diva no es frágil. Es impredecible.</span>
+              <span data-lang="en">In the mansion, her survival is social: she smiles when it’s convenient, provokes when necessary, moves closer to those in power, and distances herself from those falling. Not out of malice, but by instinct. But when the confinement wipes away the mirror —no light, no makeup, no framing— it’s not her beauty that falters: it’s her strategy. And without a strategy, the Diva isn't fragile. She is unpredictable.</span>
             </p>
             <p>
-              <strong>Arco actoral:</strong> poder seductor y político que se
-              descompone cuando desaparece el “marco” que sostenía la identidad.
+              <strong>
+                <span data-lang="es">Arco actoral:</span>
+                <span data-lang="en">Character Arc:</span>
+              </strong>
+              <span data-lang="es">poder seductor y político que se descompone cuando desaparece el “marco” que sostenía la identidad.</span>
+              <span data-lang="en">seductive and political power that decomposes when the "frame" sustaining the identity vanishes.</span>
             </p>
           </div>
         </div>
@@ -1101,24 +1218,20 @@ Lo que comparten no es una etiqueta generacional, sino una lógica común: el eg
           <div class="personaje__contenido">
             <h4>OJOAVIZOR</h4>
             <p>
-              Ojoavizor no es un loco: es un hombre que decidió hace tiempo que
-              no volverían a tomarle por ingenuo. Sus teorías no son
-              extravagancias: son armadura. Se siente más despierto que los
-              demás, más atento, más difícil de domesticar. En el grupo incomoda
-              porque no participa del consenso; cuando el encierro comienza, no
-              entra en pánico: entra en confirmación. Para él, el caos no es
-              sorpresa: es prueba.
+              <span data-lang="es">Ojoavizor no es un loco: es un hombre que decidió hace tiempo que no volverían a tomarle por ingenuo. Sus teorías no son extravagancias: son armadura. Se siente más despierto que los demás, más atento, más difícil de domesticar. En el grupo incomoda porque no participa del consenso; cuando el encierro comienza, no entra en pánico: entra en confirmación. Para él, el caos no es sorpresa: es prueba.</span>
+              <span data-lang="en">Ojoavizor isn't a madman: he is a man who decided long ago that he would never be taken for a fool again. His theories aren't eccentricities; they are armor. He feels more awake than the others, more observant, harder to tame. He unsettles the group because he refuses to join the consensus; when the confinement begins, he doesn’t panic—he finds confirmation. To him, chaos isn't a surprise: it’s proof.</span>
             </p>
             <p>
-              Su conflicto no es con la realidad, sino con la posibilidad de que
-              la realidad no tenga intención. Necesita que el desastre tenga
-              autor, un plan, una mano. Si todo es azar, entonces es vulnerable.
-              Y eso es lo único que no puede soportar. No desestabiliza al grupo
-              por placer: lo desestabiliza porque necesita tener razón .
+              <span data-lang="es">Su conflicto no es con la realidad, sino con la posibilidad de que la realidad no tenga intención. Necesita que el desastre tenga autor, un plan, una mano. Si todo es azar, entonces es vulnerable. Y eso es lo único que no puede soportar. No desestabiliza al grupo por placer: lo desestabiliza porque necesita tener razón.</span>
+              <span data-lang="en">His conflict isn't with reality, but with the possibility that reality has no intention. He needs the disaster to have an author, a plan, a hand. If everything is random, then he is vulnerable. And that is the only thing he cannot endure. He doesn't destabilize the group for pleasure: he does it because he needs to be right.</span>
             </p>
             <p>
-              <strong>Arco actoral:</strong> convicción como refugio; lucidez
-              como trampa; la paranoia convertida en identidad.
+              <strong>
+                <span data-lang="es">Arco actoral:</span>
+                <span data-lang="en">Character Arc:</span>
+              </strong>
+              <span data-lang="es">convicción como refugio; lucidez como trampa; la paranoia convertida en identidad.</span>
+              <span data-lang="en">conviction as a refuge; lucidity as a trap; paranoia transformed into identity.</span>
             </p>
           </div>
         </div>
@@ -1131,24 +1244,20 @@ Lo que comparten no es una etiqueta generacional, sino una lógica común: el eg
           <div class="personaje__contenido">
             <h4>SOLE</h4>
             <p>
-              Sole ha vivido siempre cerca del foco, pero rara vez dentro. Es
-              rápida, ingeniosa, la que sostiene la conversación cuando se cae y
-              convierte el silencio incómodo en risa. Sabe leer la sala y,
-              durante años, ha hecho de eso su lugar: ser imprescindible sin
-              ocupar demasiado espacio. Y está cansada. El evento es una
-              oportunidad —no necesariamente para mandar—, pero sí para dejar de
-              ser la que hace que otros brillen.
+              <span data-lang="es">Sole ha vivido siempre cerca del foco, pero rara vez dentro. Es rápida, ingeniosa, la que sostiene la conversación cuando se cae y convierte el silencio incómodo en risa. Sabe leer la sala y, durante años, ha hecho de eso su lugar: ser imprescindible sin ocupar demasiado espacio. Y está cansada. El evento es una oportunidad —no necesariamente para mandar—, pero sí para dejar de ser la que hace que otros brillen.</span>
+              <span data-lang="en">Sole has always lived near the spotlight, but rarely inside it. She is quick-witted, sharp, the one who carries the conversation when it falters and turns awkward silence into laughter. She knows how to read the room and, for years, has made that her niche: being essential without taking up too much space. And she is tired. The event is an opportunity—not necessarily to lead—but to stop being the one who makes others shine.</span>
             </p>
             <p>
-              Cuando el encierro tensa el grupo, Sole detecta fisuras antes que
-              muchos. Y ahí está su giro: deja de mediar, deja de amortiguar,
-              deja de hacer humor cuando ya no hay nada gracioso. Su silencio
-              pesa más que sus chistes, y esa retirada —dejar de sostener—
-              desestabiliza la convivencia .
+              <span data-lang="es">Cuando el encierro tensa el grupo, Sole detecta fisuras antes que muchos. Y ahí está su giro: deja de mediar, deja de amortiguar, deja de hacer humor cuando ya no hay nada gracioso. Su silencio pesa más que sus chistes, y esa retirada —dejar de sostener— desestabiliza la convivencia.</span>
+              <span data-lang="en">When the confinement strains the group, Sole detects fissures before anyone else. And therein lies her twist: she stops mediating, stops cushioning the blows, and stops making jokes when nothing is funny anymore. Her silence weighs more than her jokes, and that withdrawal—ceasing to hold things together—destabilizes their coexistence.</span>
             </p>
             <p>
-              <strong>Arco actoral:</strong> comedia como armadura que un día se
-              cae; de “pegamento” emocional a catalizadora del conflicto.
+              <strong>
+                <span data-lang="es">Arco actoral:</span>
+                <span data-lang="en">Character Arc:</span>
+              </strong>
+              <span data-lang="es">comedia como armadura que un día se cae; de “pegamento” emocional a catalizadora del conflicto.</span>
+              <span data-lang="en">comedy as armor that eventually falls away; from emotional "glue" to a catalyst for conflict.</span>
             </p>
           </div>
         </div>
@@ -1161,26 +1270,20 @@ Lo que comparten no es una etiqueta generacional, sino una lógica común: el eg
           <div class="personaje__contenido">
             <h4>TÍO PACO</h4>
             <p>
-              Tío Paco (56) es un hombre consumido, con gafas de pasta y
-              camiseta de Metallica, que vive pegado a una madre absorbente y a
-              la sensación de que el mundo siempre le ha quedado un poco grande
-              . Se aferra a la lógica como quien se aferra a una barandilla:
-              clasifica, calcula, explica. Tiene hambre de demostrarse —y
-              demostrar— que sirve para algo, que su cabeza todavía puede
-              “salvar la situación”.
+              <span data-lang="es">Tío Paco (56) es un hombre consumido, con gafas de pasta y camiseta de Metallica, que vive pegado a una madre absorbente y a la sensación de que el mundo siempre le ha quedado un poco grande. Se aferra a la lógica como quien se aferra a una barandilla: clasifica, calcula, explica. Tiene hambre de demostrarse —y demostrar— que sirve para algo, que su cabeza todavía puede “salvar la situación”.</span>
+              <span data-lang="en">Tío Paco (56) is a worn-out man, sporting thick-rimmed glasses and a Metallica t-shirt, living tied to an overbearing mother and the lingering sense that the world has always been a bit too much for him. He clings to logic like someone clutching a handrail: he classifies, calculates, explains. He is hungry to prove to himself —and others— that he is useful, that his mind can still "save the day."</span>
             </p>
             <p>
-              En la casa, cuando el encierro se vuelve operativo, él encarna la
-              promesa de la razón: cables, batería, regletas, radio, una posible
-              salida técnica. Y por eso es tan trágico: porque su momento de
-              valor no es un discurso heroico, sino un cálculo. Quiere ordenar
-              el caos… y el caos no siempre perdona. Su presencia abre un campo
-              actoral precioso: ternura seca, orgullo humilde, comicidad
-              nerviosa, y una necesidad de reconocimiento que llega tarde .
+              <span data-lang="es">En la casa, cuando el encierro se vuelve operativo, él encarna la promesa de la razón: cables, batería, regletas, radio, una posible salida técnica. Y por eso es tan trágico: porque su momento de valor no es un discurso heroico, sino un cálculo. Quiere ordenar el caos… y el caos no siempre perdona. Su presencia abre un campo actoral precioso: ternura seca, orgullo humilde, comicidad nerviosa, y una necesidad de reconocimiento que llega tarde.</span>
+              <span data-lang="en">In the house, as the confinement turns operational, he embodies the promise of reason: cables, batteries, power strips, a radio—a possible technical outlet. And that is what makes him so tragic: his moment of courage isn't a heroic speech, but a calculation. He wants to bring order to the chaos… and chaos isn't always forgiving. His presence offers a beautiful acting range: dry tenderness, humble pride, nervous wit, and a need for recognition that arrives far too late.</span>
             </p>
             <p>
-              <strong>Arco actoral:</strong> el “cerebro” del grupo que busca
-              redención práctica; la razón como fe.
+              <strong>
+                <span data-lang="es">Arco actoral:</span>
+                <span data-lang="en">Character Arc:</span>
+              </strong>
+              <span data-lang="es">el “cerebro” del grupo que busca redención práctica; la razón como fe.</span>
+              <span data-lang="en">the "brains" of the group seeking practical redemption; reason as a form of faith.</span>
             </p>
           </div>
         </div>
@@ -1193,24 +1296,20 @@ Lo que comparten no es una etiqueta generacional, sino una lógica común: el eg
           <div class="personaje__contenido">
             <h4>NATE</h4>
             <p>
-              Nate tiene talento. Entiende la técnica, el ritmo, la fabricación
-              de una imagen poderosa. Su forma de controlar el mundo no pasa por
-              imponerse, sino por dirigir desde fuera: el encuadre, la
-              prioridad, lo que se ve y lo que no. Sin Macready no estaría ahí;
-              lo admira y depende de él, y esa dependencia lo humilla. El
-              encierro le quita herramientas, pero no mirada: es de los pocos
-              que entiende que el relato puede volverse más importante que la
-              supervivencia.
+              <span data-lang="es">Nate tiene talento. Entiende la técnica, el ritmo, la fabricación de una imagen poderosa. Su forma de controlar el mundo no pasa por imponerse, sino por dirigir desde fuera: el encuadre, la prioridad, lo que se ve y lo que no. Sin Macready no estaría ahí; lo admira y depende de él, y esa dependencia lo humilla. El encierro le quita herramientas, pero no mirada: es de los pocos que entiende que el relato puede volverse más importante que la supervivencia.</span>
+              <span data-lang="en">Nate has talent. He understands technique, rhythm, and the crafting of a powerful image. His way of controlling the world isn't through dominance, but by directing from the outside: the framing, the priority, what is shown and what is hidden. Without Macready, he wouldn't be there; he admires him yet depends on him, and that dependency is humiliating. Confinement strips away his tools, but not his vision: he is one of the few who understands that the narrative can become more important than survival itself.</span>
             </p>
             <p>
-              Su conflicto es claro: quiere dejar de estar detrás. Y cuando
-              intenta ocupar un lugar que nunca le han permitido, no lo hace
-              desde la rabia, sino desde el cansancio: el gesto de alguien que
-              ha vivido a la sombra demasiado tiempo .
+              <span data-lang="es">Su conflicto es claro: quiere dejar de estar detrás. Y cuando intenta ocupar un lugar que nunca le han permitido, no lo hace desde la rabia, sino desde el cansancio: el gesto de alguien que ha vivido a la sombra demasiado tiempo.</span>
+              <span data-lang="en">His conflict is clear: he wants to stop being in the background. And when he tries to take a place he’s never been allowed to hold, he doesn't do it out of rage, but out of exhaustion: the gesture of someone who has lived in the shadows for far too long.</span>
             </p>
             <p>
-              <strong>Arco actoral:</strong> talento relegado + deseo de foco;
-              una rebelión íntima que tiene consecuencias.
+              <strong>
+                <span data-lang="es">Arco actoral:</span>
+                <span data-lang="en">Character Arc:</span>
+              </strong>
+              <span data-lang="es">talento relegado + deseo de foco; una rebelión íntima que tiene consecuencias.</span>
+              <span data-lang="en">relegated talent + desire for the spotlight; an intimate rebellion with consequences.</span>
             </p>
           </div>
         </div>
@@ -1223,18 +1322,15 @@ Lo que comparten no es una etiqueta generacional, sino una lógica común: el eg
     >
       <header class="section__header">
         <h2 class="section__title" id="estructura-dramatica-title">
-          ESTRUCTURA NARRATIVA        </h2>
+          <span data-lang="es">ESTRUCTURA NARRATIVA</span>
+          <span data-lang="en">NARRATIVE STRUCTURE</span>
+        </h2>
       </header>
 
       <div class="section__body">
         <p>
-          El guion está planteado como una estructura en cinco actos porque el
-          encierro no provoca un único giro dramático, sino una degradación por
-          fases. Cada acto marca un cambio claro en la dinámica del grupo:
-          primero la ficción social compartida, después la grieta, luego la
-          resistencia organizada, más tarde la fractura interna y, finalmente,
-          la descomposición. No es una historia de escape, sino de
-          deterioro progresivo.
+          <span data-lang="es">El guion está planteado como una estructura en cinco actos porque el encierro no provoca un único giro dramático, sino una degradación por fases. Cada acto marca un cambio claro en la dinámica del grupo: primero la ficción social compartida, después la grieta, luego la resistencia organizada, más tarde la fractura interna y, finalmente, la descomposición. No es una historia de escape, sino de deterioro progresivo.</span>
+          <span data-lang="en">The screenplay is designed as a five-act structure because the confinement doesn't trigger a single dramatic twist, but rather a phased degradation. Each act marks a clear shift in the group dynamic: first, the shared social veneer; then, the crack; followed by organized resistance; later, the internal fracture; and finally, full decomposition. This is not an escape story, but one of progressive decay.</span>
         </p>
     </div>
     <div class="img-section">
@@ -1246,7 +1342,8 @@ Lo que comparten no es una etiqueta generacional, sino una lógica común: el eg
       <div class="section__body">
 
         <p>
-       La repetición es un recurso estructural. Los intentos fallidos y las dinámicas que se reiteran construyen una sensación de tiempo espeso y encierro real. Cada repetición no estanca la acción: la intensifica, al exponer con mayor claridad las pulsiones de los personajes. La progresión es psicológica y moral antes que física.
+          <span data-lang="es">La repetición es un recurso estructural. Los intentos fallidos y las dinámicas que se reiteran construyen una sensación de tiempo espeso y encierro real. Cada repetición no estanca la acción: la intensifica, al exponer con mayor claridad las pulsiones de los personajes. La progresión es psicológica y moral antes que física.</span>
+          <span data-lang="en">Repetition is used as a structural tool. Failed attempts and recurring dynamics build a sense of "thick time" and authentic entrapment. Each repetition, rather than stalling the action, intensifies it by exposing the characters' core drives with greater clarity. The progression is psychological and moral rather than physical.</span>
         </p>
     </div>
     
@@ -1267,38 +1364,39 @@ Lo que comparten no es una etiqueta generacional, sino una lógica común: el eg
     >
       <header class="section__header">
         <h2 class="section__title" id="publico-objetivo-title">
-          PÚBLICO OBJETIVO
+          <span data-lang="es">PÚBLICO OBJETIVO</span>
+          <span data-lang="en">TARGET AUDIENCE</span>
         </h2>
       </header>
 
       <div class="section__body">
         <p>
-          El proyecto se dirige principalmente a un público de 18 a 40 años,
-          habituado al consumo de plataformas y a narrativas de tensión
-          psicológica con lectura social. Es un espectador que reconoce el
-          lenguaje de las redes, la cultura de la imagen y la performatividad
-          como parte de su vida cotidiana, y que conecta con historias que
-          cuestionan esas dinámicas desde dentro.
+          <span data-lang="es">El proyecto se dirige principalmente a un público de 18 a 40 años, habituado al consumo de plataformas y a narrativas de tensión psicológica con lectura social. Es un espectador que reconoce el lenguaje de las redes, la cultura de la imagen y la performatividad como parte de su vida cotidiana, y que conecta con historias que cuestionan esas dinámicas desde dentro.</span>
+          <span data-lang="en">The project primarily targets an audience aged 18 to 40, accustomed to streaming platforms and psychological thrillers with a social subtext. This is a viewer who recognizes the language of social media, image culture, and the performative nature of daily life, connecting with stories that challenge these dynamics from within.</span>
         </p>
 
         <p>
-          Se orienta especialmente a quienes conectan con thrillers sociales contemporáneos y relatos de encierro con conflicto moral, donde el suspense nace del deterioro del grupo más que de una amenaza externa. No es un terror clásico, sino una propuesta de tensión identitaria que dialoga con debates actuales sobre ego, liderazgo, cancelación y construcción pública de la identidad.
+          <span data-lang="es">Se orienta especialmente a quienes conectan con thrillers sociales contemporáneos y relatos de encierro con conflicto moral, donde el suspense nace del deterioro del grupo más que de una amenaza externa. No es un terror clásico, sino una propuesta de tensión identitaria que dialoga con debates actuales sobre ego, liderazgo, cancelación y construcción pública de la identidad.</span>
+          <span data-lang="en">It is specifically aimed at those who resonate with contemporary social thrillers and "contained" narratives centered on moral conflict, where suspense arises from the group’s deterioration rather than an external threat. This is not traditional horror, but a study in identity-driven tension that engages with current debates on ego, leadership, cancel culture, and the public construction of identity.</span>
         </p>
 
         <p>
-          Por su temática y dispositivo narrativo, es especialmente adecuada
-          para:
+          <span data-lang="es">Por su temática y dispositivo narrativo, es especialmente adecuada para:</span>
+          <span data-lang="en">Due to its themes and narrative framework, the film is particularly well-suited for:</span>
         </p>
 
         <ul class="section__list">
           <li>
-            Estreno en plataforma, donde la conversación digital y el debate amplifican su impacto.
+            <span data-lang="es">Estreno en plataforma, donde la conversación digital y el debate amplifican su impacto.</span>
+            <span data-lang="en">A streaming platform release, where digital conversation and online debate can amplify its impact.</span>
           </li>
           <li>
-            Circuito de festivales de género como Festival Internacional de Cine Fantástico de Sitges, donde el encierro alegórico y la lectura autoral encuentran un marco natural.
+            <span data-lang="es">Circuito de festivales de género como Festival Internacional de Cine Fantástico de Sitges, donde el encierro alegórico y la lectura autoral encuentran un marco natural.</span>
+            <span data-lang="en">The genre festival circuit, such as the Sitges International Fantastic Film Festival, where allegorical confinement and auteur-driven narratives find a natural home.</span>
           </li>
           <li>
-            Mercado internacional, al abordar un conflicto universal: la necesidad de reconocimiento y el miedo a la irrelevancia en contextos de crisis.
+            <span data-lang="es">Mercado internacional, al abordar un conflicto universal: la necesidad de reconocimiento y el miedo a la irrelevancia en contextos de crisis.</span>
+            <span data-lang="en">The international market, as it addresses a universal conflict: the need for recognition and the fear of irrelevance in times of crisis.</span>
           </li>
         </ul>
       </div>
@@ -1316,67 +1414,86 @@ Lo que comparten no es una etiqueta generacional, sino una lógica común: el eg
     >
       <header class="section__header">
         <h2 class="section__title" id="potencial-comercial-title">
-          POTENCIAL DE MERCADO        </h2>
+          <span data-lang="es">POTENCIAL DE MERCADO</span>
+          <span data-lang="en">MARKET POTENTIAL</span>
+        </h2>
       </header>
 
       <div class="section__body">
         <p>
-          El proyecto combina ambición autoral con una estructura de producción
-          eficiente. Está concebido como una película de alto impacto narrativo
-          con un modelo de coste contenido y una fuerte capacidad de
-          conversación pública.
+          <span data-lang="es">El proyecto combina ambición autoral con una estructura de producción eficiente. Está concebido como una película de alto impacto narrativo con un modelo de coste contenido y una fuerte capacidad de conversación pública.</span>
+          <span data-lang="en">The project combines auteur ambition with an efficient production structure. It is conceived as a high-impact narrative film with a cost-efficient model and a strong capacity for public conversation.</span>
         </p>
 
-        <h4>Espacio único (presupuesto controlado).</h4>
+        <h4>
+          <span data-lang="es">Espacio único (presupuesto controlado).</span>
+          <span data-lang="en">Single Location (Controlled Budget).</span>
+        </h4>
         <p>
-          La acción se desarrolla principalmente en una única localización: una
-          mansión aislada. Esto permite concentrar el presupuesto en diseño de
-          producción, atmósfera y elenco, reduciendo significativamente costes
-          logísticos sin perder intensidad dramática. El encierro no es solo una
-          decisión narrativa, sino también una ventaja industrial: maximiza
-          tensión con mínimos desplazamientos y control total del entorno de
-          rodaje.
+          <span data-lang="es">La acción se desarrolla principalmente en una única localización: una mansión aislada. Esto permite concentrar el presupuesto en diseño de producción, atmósfera y elenco, reduciendo significativamente costes logísticos sin perder intensidad dramática. El encierro no es solo una decisión narrativa, sino también una ventaja industrial: maximiza tensión con mínimos desplazamientos y control total del entorno de rodaje.</span>
+          <span data-lang="en">The action takes place primarily in a single location: a secluded mansion. This allows the budget to be concentrated on production design, atmosphere, and cast, significantly reducing logistical costs without losing dramatic intensity. The confinement is not only a narrative choice but also an industrial advantage: it maximizes tension with minimal displacements and total control over the filming environment.</span>
         </p>
 
-        <h4>Reparto coral (coste moderado, alto atractivo).</h4>
+           <h4>
+          <span data-lang="es">Reparto coral (coste moderado, alto atractivo).</span>
+          <span data-lang="en">Ensemble Cast (Moderate Cost, High Appeal).</span>
+        </h4>
         <p>
-          El peso dramático se distribuye entre varios personajes, lo que
-          permite combinar intérpretes reconocibles con talento emergente. La película no depende de una única estrella, sino de un conjunto sólido, lo que favorece el equilibrio presupuestario y amplía el alcance promocional.
+          <span data-lang="es">El peso dramático se distribuye entre varios personajes, lo que permite combinar intérpretes reconocibles con talento emergente. La película no depende de una única estrella, sino de un conjunto sólido, lo que favorece el equilibrio presupuestario y amplía el alcance promocional.</span>
+          <span data-lang="en">The dramatic weight is distributed among several characters, allowing for a mix of recognizable performers and emerging talent. The film does not rely on a single star but on a solid ensemble, which favors budgetary balance and expands promotional reach.</span>
+        </p>
+        <h4>
+          <span data-lang="es">Capacidad de conversación social.</span>
+          <span data-lang="en">Social Conversation Potential.</span>
+        </h4>
+        <p>
+          <span data-lang="es">La historia dialoga con debates contemporáneos —identidad pública, liderazgo, cancelación, ego digital, teorías conspirativas— desde una perspectiva narrativa y no discursiva. Esta dimensión la convierte en un proyecto especialmente adecuado para entornos de plataforma y para generar discusión crítica tras el visionado.</span>
+          <span data-lang="en">The story engages with contemporary debates—public identity, leadership, cancel culture, digital ego, conspiracy theories—from a narrative rather than a preachy perspective. This dimension makes it a project uniquely suited for streaming environments and for generating critical discussion post-viewing.</span>
         </p>
 
-        <h4>Capacidad de conversación social.</h4>
+        <h4>
+          <span data-lang="es">Final viralizable.</span>
+          <span data-lang="en">Viral-Ready Climax.</span>
+        </h4>
         <p>
-          La historia dialoga con debates contemporáneos —identidad pública, liderazgo, cancelación, ego digital, teorías conspirativas— desde una perspectiva narrativa y no discursiva. Esta dimensión la convierte en un proyecto especialmente adecuado para entornos de plataforma y para generar discusión crítica tras el visionado.
+          <span data-lang="es">El desenlace no busca cierre complaciente, sino impacto. Está diseñado para provocar discusión inmediata, interpretación múltiple y circulación en forma de clips, escenas icónicas y momentos compartibles. Es el tipo de final que impulsa el boca-oreja digital.</span>
+          <span data-lang="en">The ending does not seek a complacent closure, but rather raw impact. It is designed to spark immediate discussion, multiple interpretations, and circulation through clips, iconic scenes, and shareable moments. It is the kind of ending that drives digital word-of-mouth.</span>
         </p>
-
-        <h4>Final viralizable.</h4>
+    
         <p>
-          El desenlace no busca cierre complaciente, sino impacto. Está diseñado
-          para provocar discusión inmediata, interpretación múltiple y
-          circulación en forma de clips, escenas icónicas y momentos
-          compartibles. Es el tipo de final que impulsa el boca-oreja digital.
-        </p>
-
-        <p>
-          En conjunto, se trata de una película pensada para maximizar impacto con recursos controlados, combinando viabilidad industrial y potencial de recorrido cultural.
+          <span data-lang="es">En conjunto, se trata de una película pensada para maximizar impacto con recursos controlados, combinando viabilidad industrial y potencial de recorrido cultural.</span>
+          <span data-lang="en">Overall, this is a film designed to maximize impact with controlled resources, combining industrial viability with strong cultural potential.</span>
         </p>
       </div>
     </section>
     <section class="visual" id="propuesta-visual" aria-labelledby="propuesta-visual-title">
       <header class="section__header">
         <h2 class="section__title" id="propuesta-visual-title">
-          PROPUESTA VISUAL
+          <span data-lang="es">
+
+          PROPUESTA VISUAL  </span>
+          <span data-lang="en">VISUAL PROPOSAL
+
+          </span>
         </h2>
       </header>
 
       <div class="section__body">
         <p class="visual__intro">
-     Las siguientes imágenes conceptuales ilustran la evolución visual de la película: del lujo controlado y estético del inicio a la progresiva degradación física y moral del encierro.
-        </p>
+          <span data-lang="es">
+            Las siguientes imágenes conceptuales ilustran la evolución visual de la película: del lujo controlado y estético del inicio a la progresiva degradación física y moral del encierro.
+          </span>
+          <span data-lang="en">
+            These conceptual images illustrate the visual evolution of the film: from controlled, aesthetic luxury at the beginning to the progressive physical and moral degradation in confinement.
+          </span>        </p>
 
       <p class="visual__intro">
-El contraste entre el exterior nevado —blanco, inmóvil, silencioso— y el interior cada vez más oscuro refuerza la sensación de aislamiento. El dispositivo visual acompaña así la transformación del espectáculo en deterioro.
-        </p>
+        <span data-lang="es">
+          El contraste entre el exterior nevado —blanco, inmóvil, silencioso— y el interior cada vez más oscuro refuerza la sensación de aislamiento. El dispositivo visual acompaña así la transformación del espectáculo en deterioro.
+        </span>
+        <span data-lang="en">
+          The contrast between the snowy exterior—white, motionless, silent—and the increasingly dark interior reinforces the sense of isolation. This visual device thus accompanies the transformation of the spectacle into decay.
+        </span>        </p>
 
         
           <div class="img-section">
@@ -1448,14 +1565,23 @@ El contraste entre el exterior nevado —blanco, inmóvil, silencioso— y el in
     <section class="visual" id="referentes" aria-labelledby="propuesta-visual-title">
       <header class="section__header">
         <h2 class="section__title" id="referentes-title">
-          REFERENTES
+          <span data-lang="es">
+
+          REFERENTES  </span>   
+          <span data-lang="en">
+
+          REFERENCES  </span>   
         </h2>
       </header>
 
       <div class="section__body">
         <p class="visual__intro">
-Referencias visuales y conceptuales que dialogan con el aislamiento, la tensión grupal y la progresiva degradación del espacio.
-        </p>
+          <span data-lang="es">
+            Referencias visuales y conceptuales que dialogan con el aislamiento, la tensión grupal y la progresiva degradación del espacio.
+          </span>
+          <span data-lang="en">
+            Visual and conceptual references that dialogue with isolation, group tension, and the progressive degradation of space.
+          </span>        </p>
 
        
           <div class="img-section">
@@ -1467,10 +1593,17 @@ Referencias visuales y conceptuales que dialogan con el aislamiento, la tensión
           </div>
 
 <div class="section__body">
-  <h4>El ángel exterminador</h4>
+  <h4>   <span data-lang="es">El ángel exterminador </span>
+    <span data-lang="en">
+    The Exterminating Angel </span>
+  </h4>
   <p>
-   Referencia estructural y conceptual. El encierro inexplicable como dispositivo que despoja a una élite de sus códigos de convivencia y revela su fragilidad moral. Aquí el aislamiento no crea monstruos: elimina el marco social que contenía el ego.
-  </p>
+    <span data-lang="es">
+      Referencia estructural y conceptual. El encierro inexplicable como dispositivo que despoja a una élite de sus códigos de convivencia y revela su fragilidad moral.
+    </span>
+    <span data-lang="en">
+      Structural and conceptual reference. The inexplicable confinement as a device that strips an elite of its codes of coexistence, revealing their moral fragility.
+    </span>  </p>
 </div>
 
           <div class="img-section">
@@ -1482,10 +1615,18 @@ Referencias visuales y conceptuales que dialogan con el aislamiento, la tensión
           </div>
 
 <div class="section__body">
-  <h4>Los odiosos ocho</h4>
-  <p>
-   Referente atmosférico: nieve, espacio cerrado y violencia latente. El interior como olla a presión donde cada mirada y cada silencio cargan tensión. La mansión funciona como refugio de lujo que se transforma en territorio hostil.
-  </p>
+  <h4>
+    <span data-lang="es">
+     Los odiosos ocho
+    </span>
+    <span data-lang="en">
+      The Hateful Eight</span></h4>  <p>
+        <span data-lang="es">
+          Referente atmosférico: nieve, espacio cerrado y violencia latente. El interior como olla a presión donde cada mirada y cada silencio cargan tensión.
+        </span>
+        <span data-lang="en">
+          Atmospheric reference: snow, enclosed space and latent violence. The interior as a pressure cooker where every glance and silence carry tension.
+        </span>  </p>
 </div>
 
           <div class="img-section">
@@ -1497,10 +1638,19 @@ Referencias visuales y conceptuales que dialogan con el aislamiento, la tensión
           </div>
 
 <div class="section__body">
-  <h4>La cosa (The Thing)</h4>
+  <h4>
+    <span data-lang="es">
+      La cosa 
+    </span>
+    <span data-lang="en">
+      The Thing</span></h4>
   <p>
- Modelo de desconfianza progresiva y fractura interna. Aislamiento climático y deterioro del grupo como motor dramático. No hay criatura externa: la amenaza surge desde dentro.
-  </p>
+    <span data-lang="es">
+      Modelo de desconfianza progresiva y fractura interna. Aislamiento climático y deterioro del grupo como motor dramático.
+    </span>
+    <span data-lang="en">
+      Model of progressive distrust and internal fracture. Climatic isolation and group deterioration as dramatic drivers.
+    </span>  </p>
 </div>
 
           <div class="img-section">
@@ -1512,10 +1662,36 @@ Referencias visuales y conceptuales que dialogan con el aislamiento, la tensión
           </div>
 
 <div class="section__body">
-  <h4>El resplandor</h4>
+  <h4>  <span data-lang="es">
+    El resplandor
+  </span>
+  <span data-lang="en">
+    The Shining</span></h4>
   <p>
-Contraste entre paisaje nevado y aislamiento psicológico. El exterior blanco e inmóvil frente a un interior cada vez más opresivo. El espacio deja de ser decorado y se convierte en presencia.
-  </p>
+    <span data-lang="es">
+      Contraste entre paisaje nevado y aislamiento psicológico. El exterior blanco e inmóvil frente a un interior cada vez más opresivo.
+    </span>
+    <span data-lang="en">
+      Contrast between snowy landscape and psychological isolation. The white, motionless exterior against an increasingly oppressive interior.
+    </span>  </p>
+</div>
+
+
+<div class="img-section">
+  <img
+    src="img/ejemplo7.JPG"
+    alt="Referencia visual 6"
+    loading="lazy"
+  />
+</div>
+<div class="section__body">
+<h4>Very Bad Things</h4>
+<p>
+<span data-lang="es">
+  Referencia de degradación moral contemporánea. El desastre se construye desde decisiones torpes y egoístas, donde la violencia carece de épica y el horror convive con la banalidad, revelando la incapacidad del grupo para asumir la gravedad de lo que ocurre.</span>
+  <span data-lang="en">
+    Reference for contemporary moral degradation. The disaster is built through clumsy, selfish decisions, where violence lacks epic weight and horror coexists with banality, revealing the group’s inability to grasp the gravity of what is happening.
+  </span></p>
 </div>
 
           <div class="img-section">
@@ -1527,11 +1703,18 @@ Contraste entre paisaje nevado y aislamiento psicológico. El exterior blanco e 
           </div>
 
 <div class="section__body">
-  <h4>El cuento de la criada</h4>
+  <h4>  <span data-lang="es">
+   El cuento de la criada
+  </span>
+  <span data-lang="en">
+    The Handmaid's Tale.</span></h4>
   <p>
-    Referencia de atmósfera y contención. Uso expresivo de la luz y del encuadre cerrado para intensificar la tensión sin estridencias.
-    La introspección no se verbaliza: se sugiere en miradas, silencios y una
-    puesta en escena que respira opresión.
+    <span data-lang="es">
+      Referencia de atmósfera y contención. Uso expresivo de la luz y del encuadre cerrado para intensificar la tensión sin estridencias.
+    </span>
+    <span data-lang="en">
+      Atmospheric and containment reference. Expressive use of light and tight framing to heighten tension without harshness.
+    </span>
   </p>
 </div>
 
@@ -1545,35 +1728,90 @@ Contraste entre paisaje nevado y aislamiento psicológico. El exterior blanco e 
 <div class="section__body">
   <h4>The Bear</h4>
   <p>
-    Ejemplo contemporáneo de dinámicas de grupo y ritmo verbal. Conversaciones
-    superpuestas, tensión constante y liderazgo disputado en espacios reducidos.
-    La presión nace de la interacción: egos en fricción que convierten cada
-    diálogo en un combate emocional.
+    <span data-lang="es">
+      Ejemplo contemporáneo de dinámicas de grupo y ritmo verbal. Conversaciones superpuestas, tensión constante y liderazgo disputado en espacios reducidos.
+    </span>
+    <span data-lang="en">
+      Contemporary example of group dynamics and verbal rhythm. Overlapping conversations, constant tension, and disputed leadership in confined spaces.
+    </span>
   </p>
-</div>
-     
-     
+</div>   
     </section>
 
     <footer class="footer" aria-label="Información del proyecto">
       <div class="footer__inner">
-       
+        
+        <div class="footer__group">
+          <p class="footer__author">
+            <span data-lang="es">Escrito por</span>
+            <span data-lang="en">Written by</span> 
+            <br><strong>Manel Fernández Escobar</strong>
+          </p>
+        </div>
     
-        <p class="footer__author">
-          Escrito por <strong>Manel Fernández Escobar</strong>
-        </p>
-    
-        <p class="footer__contact">
+        <div class="footer__group footer__group--center">
           <a href="mailto:manelfernandezescobar@gmail.com">manelfernandezescobar@gmail.com</a>
           <span class="footer__sep">·</span>
+          <span class="footer__phone">+34 652 981 449</span>
+        </div>
+    
+        <div class="footer__group footer__group--right">
+          <p class="footer__copy">
+            <span data-lang="es">© 2026 · TODOS LOS DERECHOS</span>
+            <span data-lang="en">© 2026 · ALL RIGHTS RESERVED</span>
           </p>
-          <p><span class="footer__phone">+34 652 981 449</span></p>
+        </div>
+        
       </div>
     </footer>
-    <a href="#portada" class="btn-cerrar-global">✕ CERRAR</a>
+    <a href="#portada" class="btn-cerrar-global">✕ <span data-lang="es">CERRAR</span>
+      <span data-lang="en">CLOSE</span></a>
+
+    <script>
+function changeLanguage(lang) {
+  // 1. Cambia la clase en el HTML para el CSS de los textos
+  if (lang === 'en') {
+    document.documentElement.classList.add('lang-en');
+  } else {
+    document.documentElement.classList.remove('lang-en');
+  }
+
+  // 2. CAMBIA LOS BOTONES A ROJO
+  // Quitamos 'active' de todos
+  document.querySelectorAll('.language-picker button').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  // Se lo ponemos al que clicamos (buscando por el texto del botón)
+  const buttons = document.querySelectorAll('.language-picker button');
+  buttons.forEach(btn => {
+    if(btn.innerText.toLowerCase() === lang) {
+      btn.classList.add('active');
+    }
+  });
+}
+function handleFooterVisibility() {
+    const footer = document.querySelector('.footer');
+    const hash = window.location.hash;
+
+    // Si no hay hash o es #portada, mostramos el footer
+    if (!hash || hash === '#portada') {
+      footer.classList.remove('footer--hidden');
+    } else {
+      footer.classList.add('footer--hidden');
+    }
+  }
+
+  // Escuchar cuando el usuario navega o cambia de sección
+  window.addEventListener('hashchange', handleFooterVisibility);
+  
+  // Ejecutar al cargar la página por primera vez
+  window.addEventListener('load', handleFooterVisibility);
+// Para que al cargar la web ya salga uno marcado:
+window.onload = () => changeLanguage('es');
+</script>
   </body>
 </html>
-
 
 
 
